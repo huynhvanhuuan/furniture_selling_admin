@@ -4,16 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.domain.AppServiceResult;
+import vn.edu.hcmuaf.fit.dto.category.CategoryCreate;
 import vn.edu.hcmuaf.fit.dto.category.CategoryDto;
 import vn.edu.hcmuaf.fit.entity.Category;
 import vn.edu.hcmuaf.fit.service.CategoryService;
 import vn.edu.hcmuaf.fit.service.impl.CategoryServiceImpl;
+import vn.edu.hcmuaf.fit.util.StringUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class CategoryAPIController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -48,56 +51,43 @@ public class CategoryAPIController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String uri = req.getRequestURI();
-        Long id = Long.parseLong(uri.substring("/todos/".length()));
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String name = request.getParameter("name");
+        String sku = StringUtil.toStringWithoutSpaces(name).toUpperCase(Locale.ROOT);
 
-        if (Todos.todos.containsKey(id)) {
-            resp.setStatus(422);
-            resp.getOutputStream().println("You cannot created Todo with id " + id + " because it exists!");
+        CategoryCreate newCategory = new CategoryCreate(sku, name);
+
+        AppServiceResult<CategoryDto> result = categoryService.createCategory(newCategory);
+        if (result.isSuccess()) {
+            response.setStatus(200);
+            response.getWriter().println(GSON.toJson(result.getData()));
+        } else {
+            response.sendError(result.getErrorCode(), result.getMessage());
         }
-
-        String json = Util.readInputStream(req.getInputStream());
-        Todo todo = GSON.fromJson(json, Todo.class);
-        todo.setId(id);
-
-        Todos.todos.put(todo.getId(), todo);
-
-        resp.setStatus(201);
-        resp.setHeader("Content-Type", "application/json");
-        resp.getOutputStream().println(GSON.toJson(todo));
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String uri = req.getRequestURI();
-        Long id = Long.parseLong(uri.substring("/todos/".length()));
+        String uri = request.getRequestURI();
+        String action = request.getPathInfo();
+        long id = Long.parseLong(request.getParameter("id"));
+        switch (action) {
+            case "/update-category":
+                CategoryDto category = categoryService.getCategory(id);
+                String name = request.getParameter("name");
+                String sku = StringUtil.toStringWithoutSpaces(name).toUpperCase(Locale.ROOT);
+                categoryService.updateCategory(new Category(id, sku, name, ));
+                break;
 
-        if (!Todos.todos.containsKey(id)) {
-            resp.setStatus(422);
-            resp.getOutputStream().println("You cannot update Todo with id " + id + " because it doesn't exists!");
+            case "/update-status":
+                categoryService.updateStatus(id);
+                break;
         }
-
-        String json = Util.readInputStream(req.getInputStream());
-        Todo todo = GSON.fromJson(json, Todo.class);
-        todo.setId(id);
-
-        Todos.todos.put(todo.getId(), todo);
-
-        resp.setStatus(200);
-        resp.setHeader("Content-Type", "application/json");
-        resp.getOutputStream().println(GSON.toJson(todo));
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String uri = req.getRequestURI();
-        Long id = Long.parseLong(uri.substring("/todos/".length()));
-
-        Todo todo = Todos.todos.remove(id);
-        String json = GSON.toJson(todo);
-
-        resp.setStatus(200);
-        resp.setHeader("Content-Type", "application/json");
-        resp.getOutputStream().println(json);
+        String uri = request.getRequestURI();
     }
 }
