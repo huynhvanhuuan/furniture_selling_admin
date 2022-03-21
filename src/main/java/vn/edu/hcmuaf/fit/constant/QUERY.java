@@ -54,14 +54,13 @@ public class QUERY {
 
     /* CATEGORY */
     public static class CATEGORY {
-        public static final String GET_LIST = "select * from category";
-        public static final String GET_LIST_SKU_HAS_PRODUCT = "select distinct category_sku from product";
-        public static final String GET_CATEGORY_BY_SKU = "select * from category where sku like ?";
-        public static final String FIND_BY_SKU_OR_NAME = "select * from category where sku like ? or name like ?";
+        public static final String FIND_ALL = "select * from category";
+        public static final String FIND_CATEGORY_BY_ID = "select * from category where id = ?";
+        public static final String FIND_CATEGORY_BY_SKU = "select * from category where sku like ?";
+        public static final String FIND_CATEGORY_BY_NAME = "select * from category where name like ?";
         public static final String CREATE = "insert into category(sku, name) values(?,?)";
-        public static final String UPDATE = "update category set sku = ?, name = ? where sku like ?";
-        public static final String DELETE = "delete from category where sku = ?";
-        public static final String CHANGE_ACTIVE = "update category set active = (case active when 1 then 0 when 0 then 1 end) where id = ?";
+        public static final String UPDATE = "update category set sku = ?, name = ? where id = ?";
+        public static final String DELETE = "delete from category where id = ?";
     }
 
     /* TRADEMARK */

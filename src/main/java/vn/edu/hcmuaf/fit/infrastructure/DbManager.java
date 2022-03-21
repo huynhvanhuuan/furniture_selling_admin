@@ -10,7 +10,7 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class DbManager implements ServletContextListener {
 
-    public static IConnectionPool connectionPool;
+    public IConnectionPool connectionPool;
 
     public DbManager() {}
 

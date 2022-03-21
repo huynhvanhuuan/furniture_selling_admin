@@ -1,22 +1,16 @@
-package vn.edu.hcmuaf.fit.entity;
+package vn.edu.hcmuaf.fit.dto.category;
+
+import vn.edu.hcmuaf.fit.entity.Category;
 
 import java.io.Serializable;
 
-public class Category implements Serializable {
+public class CategoryDto implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private long id;
     private String sku;
     private String name;
     private boolean active;
-
-    public Category() {
-    }
-
-    public Category(long id, String sku, String name, boolean active) {
-        this.id = id;
-        this.sku = sku;
-        this.name = name;
-        this.active = active;
-    }
 
     public long getId() {
         return id;
@@ -48,5 +42,14 @@ public class Category implements Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public static CategoryDto createFromEntity(Category category) {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(category.getId());
+        categoryDto.setSku(category.getSku());
+        categoryDto.setName(category.getName());
+        categoryDto.setActive(category.isActive());
+        return categoryDto;
     }
 }

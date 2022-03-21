@@ -224,4 +224,8 @@ public final class StringUtil {
 		
 		return fullname.replaceFirst("[.][^.]+$", "");
 	}
+
+    public static String toStringWithoutSpaces(String s) {
+        return s.replaceAll("\\s+", "");
+    }
 }

@@ -2,6 +2,9 @@ package vn.edu.hcmuaf.fit.controller;
 
 import com.google.gson.Gson;
 import vn.edu.hcmuaf.fit.dto.address.Province;
+import vn.edu.hcmuaf.fit.entity.Address;
+import vn.edu.hcmuaf.fit.entity.Province;
+import vn.edu.hcmuaf.fit.entity.Trademark;
 import vn.edu.hcmuaf.fit.helper.ResponseHandler;
 import vn.edu.hcmuaf.fit.model.Address;
 import vn.edu.hcmuaf.fit.model.Trademark;

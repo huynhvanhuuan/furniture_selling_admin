@@ -1,8 +1,8 @@
 package vn.edu.hcmuaf.fit.controller;
 
 import com.google.gson.Gson;
-import vn.edu.hcmuaf.fit.helper.ResponseHandler;
-import vn.edu.hcmuaf.fit.model.Category;
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
+import vn.edu.hcmuaf.fit.entity.Category;
 import vn.edu.hcmuaf.fit.service.CategoryService;
 import vn.edu.hcmuaf.fit.service.impl.CategoryServiceImpl;
 
@@ -17,15 +17,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.StringTokenizer;
 
-@WebServlet(name = "CategoryController", value = "/admin/category")
+@WebServlet(name = "CategoryController", value = "/category")
 public class CategoryController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private CategoryService categoryService;
-    
-    @Override
-    public void init() throws ServletException {
-        categoryService = new CategoryServiceImpl();
-    }
+    private final IConnectionPool connectionPool = (IConnectionPool) getServletContext().getAttribute("connectionPool");
+    private final CategoryService categoryService = new CategoryServiceImpl(connectionPool);
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -73,7 +69,7 @@ public class CategoryController extends HttpServlet {
 
     private void getMainPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
         request.setAttribute("title", "QUẢN LÝ THỂ LOẠI");
-        List<Category> categories = categoryService.getList();
+        categoryService.getCategories();
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("/view/admin/category.jsp").forward(request, response);
     }
