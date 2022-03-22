@@ -8,8 +8,10 @@ import vn.edu.hcmuaf.fit.domain.AppBaseResult;
 import vn.edu.hcmuaf.fit.domain.AppServiceResult;
 import vn.edu.hcmuaf.fit.dto.category.CategoryCreate;
 import vn.edu.hcmuaf.fit.dto.category.CategoryDto;
+import vn.edu.hcmuaf.fit.dto.category.CategoryUpdate;
 import vn.edu.hcmuaf.fit.entity.Category;
 import vn.edu.hcmuaf.fit.service.CategoryService;
+import vn.edu.hcmuaf.fit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +107,7 @@ public class CategoryServiceImpl implements CategoryService {
 				}
 			}
 
+			newCategory.setId(0L);
 			newCategory.setSku(category.getSku());
 			newCategory.setName(category.getName());
 
@@ -119,11 +122,14 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public AppServiceResult<CategoryDto> updateCategory(Category category) {
+	public AppBaseResult updateCategory(CategoryUpdate category) {
 		try {
-			Category newCategory = new Category();
+			Category updatedCategory = categoryDAO.findById(category.getId());
 
-			if (category.getName() == null) {
+			if (updatedCategory == null)
+				return AppBaseResult.GenarateIsFailed(AppError.Validattion.errorCode(), "Category id is not exist: " + category.getId());
+
+			if (category.getName() == null && category.getName().equals("")) {
 				return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(),
 						"Name is required!", null);
 			}
@@ -135,16 +141,15 @@ public class CategoryServiceImpl implements CategoryService {
 				}
 			}
 
-			newCategory.setSku(category.getSku());
-			newCategory.setName(category.getName());
+			updatedCategory.setSku(category.getSku());
+			updatedCategory.setName(category.getName());
 
-			categoryDAO.save(newCategory);
+			categoryDAO.save(updatedCategory);
 
-			return new AppServiceResult<CategoryDto>(true, 0, "Succeed!", CategoryDto.createFromEntity(newCategory));
+			return AppBaseResult.GenarateIsSucceed();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new AppServiceResult<CategoryDto>(false, AppError.Unknown.errorCode(),
-					AppError.Unknown.errorMessage(), null);
+			return AppBaseResult.GenarateIsFailed(AppError.Unknown.errorCode(), AppError.Unknown.errorMessage());
 		}
 	}
 
