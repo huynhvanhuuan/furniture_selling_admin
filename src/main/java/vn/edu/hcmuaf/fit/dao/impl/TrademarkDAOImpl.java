@@ -1,11 +1,10 @@
 package vn.edu.hcmuaf.fit.dao.impl;
 
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.dao.AddressDAO;
 import vn.edu.hcmuaf.fit.dao.TrademarkDAO;
-import vn.edu.hcmuaf.fit.database.IConnectionPool;
-import vn.edu.hcmuaf.fit.database.QUERY;
-import vn.edu.hcmuaf.fit.model.Address;
-import vn.edu.hcmuaf.fit.model.Trademark;
+import vn.edu.hcmuaf.fit.entity.Address;
+import vn.edu.hcmuaf.fit.entity.Trademark;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -88,7 +87,17 @@ public class TrademarkDAOImpl implements TrademarkDAO {
     public void createAddress(int id, Address address) throws SQLException {
         addressDAO.createTrademarkAddress(id, address);
     }
-    
+
+    @Override
+    public Trademark findByName(String name) {
+        return null;
+    }
+
+    @Override
+    public Trademark findByWebsite(String website) {
+        return null;
+    }
+
     @Override
     public void update(Trademark trademark) throws SQLException {
         connection = connectionPool.getConnection();
@@ -127,5 +136,30 @@ public class TrademarkDAOImpl implements TrademarkDAO {
         statement.setString(2, website);
         ResultSet rs = statement.executeQuery();
         return rs.next();
+    }
+
+    @Override
+    public List<Trademark> findAll() {
+        return null;
+    }
+
+    @Override
+    public Trademark findById(Long id) {
+        return null;
+    }
+
+    @Override
+    public void save(Trademark object) {
+
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
+    public void createAddress(int id, Address address) {
+
     }
 }

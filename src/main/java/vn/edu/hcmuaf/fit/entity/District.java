@@ -3,7 +3,7 @@ package vn.edu.hcmuaf.fit.entity;
 import java.io.Serializable;
 
 public class District implements Serializable {
-    private int id;
+    private Long id;
     private String name;
     private String prefix;
     private Province province;
@@ -11,18 +11,18 @@ public class District implements Serializable {
     public District() {
     }
 
-    public District(int id, String name, String prefix, Province province) {
+    public District(Long id, String name, String prefix, Province province) {
         this.id = id;
         this.name = name;
         this.prefix = prefix;
         this.province = province;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
