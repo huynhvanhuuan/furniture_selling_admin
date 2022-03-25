@@ -14,14 +14,12 @@ import vn.edu.hcmuaf.fit.util.StringUtil;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 @WebServlet(name = "CategoryAPIController", urlPatterns = "/api/category/*")
-@HttpConstraint
 public class CategoryAPIController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
