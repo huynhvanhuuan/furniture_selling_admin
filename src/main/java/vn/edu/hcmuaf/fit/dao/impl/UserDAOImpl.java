@@ -1,43 +1,71 @@
 package vn.edu.hcmuaf.fit.dao.impl;
 
-import vn.edu.hcmuaf.fit.dao.UserDAO;
-import vn.edu.hcmuaf.fit.database.IConnectionPool;
-import vn.edu.hcmuaf.fit.database.QUERY;
-import vn.edu.hcmuaf.fit.model.User;
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
+import vn.edu.hcmuaf.fit.constant.QUERY;
+import vn.edu.hcmuaf.fit.dao.*;
+import vn.edu.hcmuaf.fit.entity.Role;
+import vn.edu.hcmuaf.fit.entity.User;
+import vn.edu.hcmuaf.fit.entity.Wishlist;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class UserDAOImpl implements UserDAO {
     private final IConnectionPool connectionPool;
     private Connection connection;
 
+    private final RoleDAO roleDAO;
+    private final WishlistDAO wishlistDAO;
+    private final AddressDAO addressDAO;
+    private final OrderDAO orderDAO;
+
     public UserDAOImpl(IConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
+        this.roleDAO = new RoleDAOImpl(connectionPool);
+        this.wishlistDAO = new WishlistDAOImpl(connectionPool);
+        this.addressDAO = new AddressDAOImpl(connectionPool);
+        this.orderDAO = new OrderDAOImpl(connectionPool);
     }
 
     @Override
-    public List<User> getList() throws SQLException {
+    public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        connection = connectionPool.getConnection();
-        ResultSet rs = connection.prepareStatement(QUERY.USER.GET_LIST).executeQuery();
-        while (rs.next()) {
-            users.add(new User());
+        try {
+            connection = connectionPool.getConnection();
+            ResultSet rs = connection.prepareStatement(QUERY.USER.FIND_ALL).executeQuery();
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String fullName = rs.getString("full_name");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                Date dateOfBirth = rs.getDate("date_of_birth");
+                boolean isFemale = rs.getBoolean("is_female");
+                String profileImageUrl = rs.getString("profile_image_url");
+                Date dateCreated = rs.getDate("date_created");
+                Date lastUpdated = rs.getDate("last_updated");
+                Role role = roleDAO.findById(rs.getLong("role_id"));
+                boolean isNotLocked = rs.getBoolean("is_not_locked");
+                boolean active = rs.getBoolean("active");
+                Set<Wishlist> wishlists = wishlistDAO.findByUserId(id);
+                users.add(new User());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return users;
         }
         connectionPool.releaseConnection(connection);
         return users;
     }
 
     @Override
-    public User get(String id) throws SQLException {
+    public User findById(Long id) {
         User user = null;
         connection = connectionPool.getConnection();
         //PreparedStatement statement = connection.prepareStatement(QUERY.USER.GET_ITEM_BY_ID);
@@ -46,7 +74,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void create(User item) throws SQLException {
+    public void save(User user) {
         connection = connectionPool.getConnection();
         PreparedStatement statement = connection.prepareStatement(QUERY.USER.CREATE_USER);
         statement.setString(1, item.getPhone() + item.getFirstName());
@@ -63,80 +91,49 @@ public class UserDAOImpl implements UserDAO {
         statement.executeUpdate();
         connectionPool.releaseConnection(connection);
     }
-    
-    @Override
-    public void update(User item) throws SQLException {
-        connection = connectionPool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(QUERY.USER.UPDATE);
-        statement.setString(1, item.getFirstName());
-        statement.setString(2, item.getLastName());
-        statement.setString(3, hashPassword(item.getPassword()));
-        statement.setString(4, item.getEmail());
-        statement.setString(5, item.getPhone());
-        statement.executeUpdate();
-    }
 
     @Override
-    public void delete(String id) throws SQLException {
+    public void delete(Long id) {
         connection = connectionPool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(QUERY.USER.DELETE);
-        statement.setString(1, id);
-        statement.executeUpdate();
-    }
-
-    @Override
-    public boolean checkUser(String email) throws SQLException {
-        connection = connectionPool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(QUERY.USER.GET_USER_BY_EMAIL);
-        statement.setString(1, email);
-        ResultSet rs = statement.executeQuery();
-
-        if (rs.next())
-            return false;
-
-        connectionPool.releaseConnection(connection);
-        return true;
-    }
-
-    @Override
-    public User checkLogin(String email, String password) throws SQLException {
-        List<User> users = new ArrayList<>();
-        connection = connectionPool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(QUERY.USER.GET_USER_BY_EMAIL);
-        statement.setString(1, email);
-        ResultSet rs = statement.executeQuery();
-
-        User user = null;
-        while (rs.next()) {
-            user = new User();
-            user.setId(rs.getString("id"));
-            user.setFirstName(rs.getString("first_name"));
-            user.setLastName(rs.getString("last_name"));
-            user.setUsername(rs.getString("username"));
-            user.setEmail(rs.getString("email"));
-            user.setPhone(rs.getString("phone"));
-            user.setPassword(rs.getString("password"));
-            user.setGender(rs.getBoolean("female") ? "female" : "male");
-            user.setProfileImageUrl(rs.getString("profile_image_url"));
-            users.add(user);
+        try {
+            PreparedStatement statement = connection.prepareStatement(QUERY.USER.DELETE);
+            statement.setLong(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        connectionPool.releaseConnection(connection);
+    }
 
-        if (users.size() != 1) return null;
-        user = users.get(0);
-        if (!user.getPassword().equals(hashPassword(password)) || !user.getEmail().equals(email))  return null;
-
+    @Override
+    public User findByEmail(String email) {
+        User user = null;
+        connection = connectionPool.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(QUERY.USER.FIND_BY_EMAIL);
+            statement.setString(1, email);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                long id = rs.getLong("id");
+                String fullName = rs.getString("first_name");
+                String password = rs.getString("password");
+                String phone = rs.getString("phone");
+                Date dateOfBirth = rs.getDate("date_of_birth");
+                boolean isFemale = rs.getBoolean("is_female");
+                String profileImageUrl = rs.getString("profile_image_url");
+                Date dateCreated = rs.getDate("date_created");
+                Date lastUpdated = rs.getDate("last_updated");
+                boolean isVerified = rs.getBoolean("is_verified");
+                Role role = roleDAO.findById(rs.getLong("role_id"));
+                boolean isNotLock = rs.getBoolean("is_not_lock");
+                boolean active = rs.getBoolean("active");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        connectionPool.releaseConnection(connection);
         return user;
     }
 
-    private String hashPassword(String password) {
-        try {
-            MessageDigest sha256 = null;
-            sha256 = MessageDigest.getInstance("SHA-256");
-            byte[] hash = sha256.digest(password.getBytes());
-            BigInteger number = new BigInteger(1, hash);
-            return number.toString(16);
-        } catch (NoSuchAlgorithmException e) {
-            return null;
-        }
-    }
 }

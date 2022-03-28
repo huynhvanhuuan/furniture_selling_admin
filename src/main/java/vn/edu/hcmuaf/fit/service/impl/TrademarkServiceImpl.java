@@ -1,7 +1,9 @@
 package vn.edu.hcmuaf.fit.service.impl;
 
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.dao.TrademarkDAO;
 import vn.edu.hcmuaf.fit.dao.impl.TrademarkDAOImpl;
+import vn.edu.hcmuaf.fit.entity.Trademark;
 import vn.edu.hcmuaf.fit.helper.DbManager;
 import vn.edu.hcmuaf.fit.model.Trademark;
 import vn.edu.hcmuaf.fit.service.TrademarkService;
@@ -12,13 +14,13 @@ import java.util.List;
 public class TrademarkServiceImpl implements TrademarkService {
 	private final TrademarkDAO trademarkDAO;
 	
-	public TrademarkServiceImpl() {
-		this.trademarkDAO = new TrademarkDAOImpl(DbManager.connectionPool);
+	public TrademarkServiceImpl(IConnectionPool connectionPool) {
+		this.trademarkDAO = new TrademarkDAOImpl(connectionPool);
 	}
 	
 	@Override
-	public List<Trademark> getList() throws SQLException {
-		return trademarkDAO.getList();
+	public List<Trademark> getTrademarks() throws SQLException {
+		return trademarkDAO.findAll();
 	}
 	
 	@Override

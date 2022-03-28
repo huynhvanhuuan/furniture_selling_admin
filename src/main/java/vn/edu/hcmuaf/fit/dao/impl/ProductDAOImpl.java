@@ -1,5 +1,6 @@
 package vn.edu.hcmuaf.fit.dao.impl;
 
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.dao.CategoryDAO;
 import vn.edu.hcmuaf.fit.dao.ProductDAO;
 import vn.edu.hcmuaf.fit.dao.TrademarkDAO;

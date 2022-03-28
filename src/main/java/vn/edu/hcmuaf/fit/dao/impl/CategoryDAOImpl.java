@@ -47,7 +47,7 @@ public class CategoryDAOImpl implements CategoryDAO {
         Category category = null;
         connection = connectionPool.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement(QUERY.CATEGORY.FIND_CATEGORY_BY_ID);
+            PreparedStatement statement = connection.prepareStatement(QUERY.CATEGORY.FIND_BY_ID);
             statement.setLong(1, id);
             ResultSet rs = statement.executeQuery();
             if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
@@ -111,7 +111,7 @@ public class CategoryDAOImpl implements CategoryDAO {
         Category category = null;
         connection = connectionPool.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement(QUERY.CATEGORY.FIND_CATEGORY_BY_SKU);
+            PreparedStatement statement = connection.prepareStatement(QUERY.CATEGORY.FIND_BY_SKU);
             statement.setString(1, sku);
             ResultSet rs = statement.executeQuery();
             if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
@@ -133,7 +133,7 @@ public class CategoryDAOImpl implements CategoryDAO {
         Category category = null;
         connection = connectionPool.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement(QUERY.CATEGORY.FIND_CATEGORY_BY_NAME);
+            PreparedStatement statement = connection.prepareStatement(QUERY.CATEGORY.FIND_BY_NAME);
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
             if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;

@@ -1,9 +1,9 @@
 package vn.edu.hcmuaf.fit.dao.impl;
 
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
+import vn.edu.hcmuaf.fit.constant.QUERY;
 import vn.edu.hcmuaf.fit.dao.OrderDAO;
 import vn.edu.hcmuaf.fit.dao.WarehouseDAO;
-import vn.edu.hcmuaf.fit.database.IConnectionPool;
-import vn.edu.hcmuaf.fit.database.QUERY;
 import vn.edu.hcmuaf.fit.model.Order;
 import vn.edu.hcmuaf.fit.model.OrderItem;
 import vn.edu.hcmuaf.fit.model.ProductDetail;
@@ -34,7 +34,7 @@ public class OrderDAOImpl implements OrderDAO {
         List<Order> list = new ArrayList<>();
         connection = connectionPool.getConnection();
         connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ORDER.GET_LIST);
+        PreparedStatement statement = connection.prepareStatement(QUERY.ORDER.FIND_ALL);
         statement.setString(1, userId);
         ResultSet rs = statement.executeQuery();
 

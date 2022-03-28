@@ -1,5 +1,6 @@
 package vn.edu.hcmuaf.fit.service.impl;
 
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.dao.ProductDAO;
 import vn.edu.hcmuaf.fit.dao.impl.ProductDAOImpl;
 import vn.edu.hcmuaf.fit.entity.Product;
@@ -14,8 +15,8 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 	private final ProductDAO productDAO;
 	
-	public ProductServiceImpl() {
-		this.productDAO = new ProductDAOImpl(DbManager.connectionPool);
+	public ProductServiceImpl(IConnectionPool connectionPool) {
+		this.productDAO = new ProductDAOImpl(connectionPool);
 	}
 	
 	@Override

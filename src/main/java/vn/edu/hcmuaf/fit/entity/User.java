@@ -1,85 +1,68 @@
 package vn.edu.hcmuaf.fit.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class User implements Serializable {
-    private String id;
-    private String firstName;
-    private String lastName;
-    private String username;
+    private Long id;
+    private String fullName;
     private String password;
     private String email;
     private String phone;
-    private String gender;
+    private Date dateOfBirth;
+    private boolean isFemale;
     private String profileImageUrl;
     private Date dateCreated;
-    private String role;
-    private Date lastLoginDate;
-    private boolean notLocked;
+    private Date lastUpdated;
+    private boolean isVerified;
+    private Role role;
+    private boolean isNotLocked;
     private boolean active;
-    private List<Address> addresses;
-    private List<Order> orders;
+    private Set<Wishlist> wishlists = new HashSet<>();
+    private Set<Address> addresses = new HashSet<>();
+    private Set<Order> orders = new HashSet<>();
 
     public User() {
     }
 
-    public User(String id, String firstName, String lastName, String username, String password, String email, String profileImageUrl, Date dateCreated, Date lastLoginDate, boolean notLocked, boolean active) {
+    public User(Long id, String fullName, String password, String email, String phone, Date dateOfBirth,
+                boolean isFemale, String profileImageUrl, Date dateCreated, Date lastUpdated, boolean isVerified,
+                Role role, boolean isNotLocked, boolean active, Set<Wishlist> wishlists, Set<Address> addresses, Set<Order> orders) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
+        this.fullName = fullName;
         this.password = password;
         this.email = email;
+        this.phone = phone;
+        this.dateOfBirth = dateOfBirth;
+        this.isFemale = isFemale;
         this.profileImageUrl = profileImageUrl;
         this.dateCreated = dateCreated;
-        this.lastLoginDate = lastLoginDate;
-        this.notLocked = notLocked;
+        this.lastUpdated = lastUpdated;
+        this.isVerified = isVerified;
+        this.role = role;
+        this.isNotLocked = isNotLocked;
         this.active = active;
+        this.wishlists = wishlists;
+        this.addresses = addresses;
+        this.orders = orders;
     }
 
-    public User(String firstName, String lastName, String phone, String gender, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.gender = gender;
-        this.email = email;
-        this.password = password;
-        this.profileImageUrl = "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
-    }
-
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPassword() {
@@ -98,6 +81,30 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public boolean isFemale() {
+        return isFemale;
+    }
+
+    public void setFemale(boolean female) {
+        isFemale = female;
+    }
+
     public String getProfileImageUrl() {
         return profileImageUrl;
     }
@@ -114,20 +121,36 @@ public class User implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public Date getLastLoginDate() {
-        return lastLoginDate;
+    public Date getLastUpdated() {
+        return lastUpdated;
     }
 
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public boolean isNotLocked() {
-        return notLocked;
+        return isNotLocked;
     }
 
     public void setNotLocked(boolean notLocked) {
-        this.notLocked = notLocked;
+        isNotLocked = notLocked;
     }
 
     public boolean isActive() {
@@ -137,54 +160,28 @@ public class User implements Serializable {
     public void setActive(boolean active) {
         this.active = active;
     }
-    
-    public List<Address> getAddresses() {
+
+    public Set<Wishlist> getWishlists() {
+        return wishlists;
+    }
+
+    public void setWishlists(Set<Wishlist> wishlists) {
+        this.wishlists = wishlists;
+    }
+
+    public Set<Address> getAddresses() {
         return addresses;
     }
-    
-    public void setAddresses(List<Address> addresses) {
+
+    public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-    
-    public List<Order> getOrders() {
+    public Set<Order> getOrders() {
         return orders;
     }
-    
-    public void setOrders(List<Order> orders) {
+
+    public void setOrders(Set<Order> orders) {
         this.orders = orders;
-    }
-    
-    public void addAddress(Address address) {
-        if (addresses == null) addresses = new ArrayList<>();
-        addresses.add(address);
-    }
-    
-    public void addOrder(Order order) {
-        if (orders == null) orders = new ArrayList<>();
-        orders.add(order);
     }
 }

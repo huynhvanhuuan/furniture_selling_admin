@@ -1,5 +1,6 @@
 package vn.edu.hcmuaf.fit.service.impl;
 
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.dao.AddressDAO;
 import vn.edu.hcmuaf.fit.dao.impl.AddressDAOImpl;
 import vn.edu.hcmuaf.fit.dto.address.District;
@@ -15,8 +16,8 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService {
 	private final AddressDAO addressDAO;
 	
-	public AddressServiceImpl() {
-		this.addressDAO = new AddressDAOImpl(DbManager.connectionPool);
+	public AddressServiceImpl(IConnectionPool connectionPool) {
+		this.addressDAO = new AddressDAOImpl(connectionPool);
 	}
 	
 	@Override

@@ -1,10 +1,9 @@
 package vn.edu.hcmuaf.fit.dao.impl;
 
 import vn.edu.hcmuaf.fit.config.IConnectionPool;
-import vn.edu.hcmuaf.fit.dao.AddressDAO;
-import vn.edu.hcmuaf.fit.database.IConnectionPool;
-import vn.edu.hcmuaf.fit.database.QUERY;
-import vn.edu.hcmuaf.fit.entity.Address;
+import vn.edu.hcmuaf.fit.constant.QUERY;
+import vn.edu.hcmuaf.fit.dao.*;
+import vn.edu.hcmuaf.fit.entity.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,271 +16,167 @@ public class AddressDAOImpl implements AddressDAO {
     private final IConnectionPool connectionPool;
     private Connection connection;
 
+    private final TrademarkDAO trademarkDAO;
+    private final UserDAO userDAO;
+    private final DistrictDAO districtDAO;
+    private final WardDAO wardDAO;
+
     public AddressDAOImpl(IConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
+        this.trademarkDAO = new TrademarkDAOImpl(connectionPool);
+        this.userDAO = new UserDAOImpl(connectionPool);
+        this.districtDAO = new DistrictDAOImpl(connectionPool);
+        this.wardDAO = new WardDAOImpl(connectionPool);
     }
 
     @Override
-    public List<Address> getListByTrademarkId(int trademarkId) throws SQLException {
+    public List<Address> findAll() {
         List<Address> addresses = new ArrayList<>();
         connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_ADDRESS_LIST_BY_TRADEMARK_ID);
-        statement.setInt(1, trademarkId);
-        ResultSet rs = statement.executeQuery();
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            String number = rs.getString("number");
-            String street = rs.getString("street");
-            int wardId = rs.getInt("ward_id");
-            int districtId = rs.getInt("district_id");
-            String path = rs.getString("path");
-            Address address;
-            if (wardId == 0) address = new Address(id, number, street, null, getDistrict(districtId), path);
-            else {
-                Ward ward = getWard(wardId);
-                address = new Address(id, number, street, ward, ward.getDistrict(), path);
+        try {
+            PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_ALL);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String number = rs.getString("number");
+                String street = rs.getString("street");
+                Ward ward = wardDAO.findById(rs.getLong("ward_id"));
+                District district = districtDAO.findById(rs.getLong("district_id"));
+                String path = rs.getString("path");
+
+                Address address = new Address(id, number, street, ward, district, path);
+                addresses.add(address);
             }
-            addresses.add(address);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return addresses;
         }
+        connectionPool.releaseConnection(connection);
         return addresses;
     }
-    
+
     @Override
-    public List<Address> getListByUserId(int userId) throws SQLException {
-        List<Address> addresses = new ArrayList<>();
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_ADDRESS_LIST_BY_USER_ID);
-        statement.setInt(1, userId);
-        ResultSet rs = statement.executeQuery();
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            String number = rs.getString("number");
-            String street = rs.getString("street");
-            int wardId = rs.getInt("ward_id");
-            int districtId = rs.getInt("district_id");
-            String path = rs.getString("path");
-            Address address;
-            if (wardId == 0) address = new Address(id, number, street, null, getDistrict(districtId), path);
-            else {
-                Ward ward = getWard(wardId);
-                address = new Address(id, number, street, ward, ward.getDistrict(), path);
-            }
-            addresses.add(address);
-        }
-        return addresses;
-    }
-    
-    @Override
-    public List<Province> getProvinceList() throws SQLException {
-        List<Province> provinces = new ArrayList<>();
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_PROVINCE_LIST);
-        ResultSet rs = statement.executeQuery();
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            String name = rs.getString("name");
-            String prefix = rs.getString("prefix");
-            Province province = new Province(id, name, prefix);
-            provinces.add(province);
-        }
-        return provinces;
-    }
-    
-    @Override
-    public List<District> getDistrictListByProvinceId(int provinceId) throws SQLException {
-        List<District> districts = new ArrayList<>();
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_DISTRICT_LIST_BY_PROVINCE_ID);
-        statement.setInt(1, provinceId);
-        ResultSet rs = statement.executeQuery();
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            String name = rs.getString("name");
-            String prefix = rs.getString("prefix");
-            Province province = getProvince(provinceId);
-            District district = new District(id, name, prefix, province);
-            districts.add(district);
-        }
-        return districts;
-    }
-    
-    @Override
-    public List<Ward> getWardListByDistrictId(int districtId) throws SQLException {
-        List<Ward> wards = new ArrayList<>();
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_WARD_LIST_BY_DISTRICT_ID);
-        statement.setInt(1, districtId);
-        ResultSet rs = statement.executeQuery();
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            String name = rs.getString("name");
-            String prefix = rs.getString("prefix");
-            District district = getDistrict(districtId);
-            Ward ward = new Ward(id, name, prefix, district);
-            wards.add(ward);
-        }
-        return wards;
-    }
-    
-    @Override
-    public Address getAddress(int id) throws SQLException {
+    public Address findById(Long id) {
         Address address = null;
         connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_ADDRESS_BY_ID);
-        statement.setInt(1, id);
-        ResultSet rs = statement.executeQuery();
-        if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
-        if (rs.next()) {
-            String number = rs.getString("number");
-            String street = rs.getString("street");
-            int districtId = rs.getInt("district_id");
-            String path = rs.getString("path");
-            if (rs.getString("ward_id") == null) {
-                District district = getDistrict(districtId);
-                address = new Address(id, number, street, null, district, path);
-            } else {
-                int wardId = rs.getInt("ward_id");
-                Ward ward = getWard(wardId);
-                address = new Address(id, number, street, ward, ward.getDistrict(), path);
+        try {
+            PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_BY_ID);
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                String number = rs.getString("number");
+                String street = rs.getString("street");
+                Ward ward = wardDAO.findById(rs.getLong("ward_id"));
+                District district = districtDAO.findById(rs.getLong("district_id"));
+                String path = rs.getString("path");
+
+                address = new Address(id, number, street, ward, district, path);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
+        connectionPool.releaseConnection(connection);
         return address;
     }
-    
+
     @Override
-    public Province getProvince(int id) throws SQLException {
-        Province province = null;
+    public void save(Address address) {
         connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_PROVINCE);
-        statement.setInt(1, id);
-        ResultSet rs = statement.executeQuery();
-        if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
-        if (rs.next()) {
-            String name = rs.getString("name");
-            String prefix = rs.getString("prefix");
-            province = new Province(id, name, prefix);
+        try {
+            PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.CREATE);
+            statement.setString(1, address.getNumber());
+            statement.setString(2, address.getStreet());
+            statement.setLong(3, address.getWard() == null ? 0 : address.getWard().getId());
+            statement.setLong(4, address.getDistrict().getId());
+            statement.setString(5, address.getPath());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return province;
-    }
-    
-    @Override
-    public District getDistrict(int id) throws SQLException {
-        District district = null;
-        connection = connectionPool.getConnection();
         connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_DISTRICT);
-        statement.setInt(1, id);
-        ResultSet rs = statement.executeQuery();
-        if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
-        if (rs.next()) {
-            String name = rs.getString("name");
-            String prefix = rs.getString("prefix");
-            int provinceId = rs.getInt("province_id");
-            Province province = getProvince(provinceId);
-            district = new District(id, name, prefix, province);
+    }
+
+    @Override
+    public void delete(Long id) {
+        connection = connectionPool.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.DELETE);
+            statement.setLong(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return district;
-    }
-    
-    @Override
-    public Ward getWard(int id) throws SQLException {
-        Ward ward = null;
-        connection = connectionPool.getConnection();
         connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.GET_WARD);
-        statement.setInt(1, id);
-        ResultSet rs = statement.executeQuery();
-        if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
-        if (rs.next()) {
-            String name = rs.getString("name");
-            String prefix = rs.getString("prefix");
-            int districtId = rs.getInt("district_id");
-            District district = getDistrict(districtId);
-            ward = new Ward(id, name, prefix, district);
+    }
+
+    @Override
+    public List<Address> findByTrademarkId(Long trademarkId) {
+        Trademark trademark = trademarkDAO.findById(trademarkId);
+        List<Address> addresses = new ArrayList<>();
+        try {
+            connection = connectionPool.getConnection();
+            connectionPool.releaseConnection(connection);
+            PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_BY_TRADEMARK_ID);
+            statement.setLong(1, trademarkId);
+            ResultSet rs = statement.executeQuery();
+            addToList(rs, addresses);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return addresses;
         }
-        return ward;
+        return addresses;
     }
     
     @Override
-    public void createTrademarkAddress(int trademarkId, Address address) throws SQLException {
-        create(address);
+    public List<Address> findByUserId(int userId) {
+        User user = userDAO.findById(userId);
+        List<Address> addresses = new ArrayList<>();
         connection = connectionPool.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_BY_USER_ID);
+            statement.setInt(1, userId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String number = rs.getString("number");
+                String street = rs.getString("street");
+                int wardId = rs.getInt("ward_id");
+                int districtId = rs.getInt("district_id");
+                String path = rs.getString("path");
+                Address address;
+                if (wardId == 0) address = new Address(id, number, street, null, getDistrict(districtId), path);
+                else {
+                    Ward ward = getWard(wardId);
+                    address = new Address(id, number, street, ward, ward.getDistrict(), path);
+                }
+                addresses.add(address);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return addresses;
+        }
         connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.CREATE_TRADEMARK_ADDRESS);
-        statement.setInt(1, trademarkId);
-        statement.setInt(2, getLatestId());
-        statement.executeUpdate();
+        return addresses;
     }
-    
+
     @Override
-    public void createUserAddress(String userId, Address address) throws SQLException {
-        create(address);
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.CREATE_USER_ADDRESS);
-        statement.setString(1, userId);
-        statement.setInt(2, getLatestId());
-        statement.executeUpdate();
+    public Address findByPath(String path) {
+        return null;
     }
-    
-    @Override
-    public void update(Address address) throws SQLException {
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.UPDATE);
-        statement.setString(1, address.getNumber());
-        statement.setString(2, address.getStreet());
-        statement.setInt(3, address.getWard() == null ? 0 : address.getWard().getId());
-        statement.setInt(4, address.getDistrict().getId());
-        statement.setString(5, address.getPath());
-        statement.setInt(6, address.getId());
-        statement.executeUpdate();
+
+    private void addToList(ResultSet rs, List<Address> addresses) throws SQLException {
+        while (rs.next()) {
+            long id = rs.getLong("id");
+            String number = rs.getString("number");
+            String street = rs.getString("street");
+            Ward ward = wardDAO.findById(rs.getLong("ward_id"));
+            District district = districtDAO.findById(rs.getLong("district_id"));
+            String path = rs.getString("path");
+            Address address = new Address(id, number, street, ward, district, path);
+            addresses.add(address);
+        }
     }
-    
-    @Override
-    public void delete(int id) throws SQLException {
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.DELETE);
-        statement.setInt(1, id);
-        statement.executeUpdate();
-    }
-    
-    @Override
-    public boolean checkExist(String path) throws SQLException {
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_BY_PATH);
-        statement.setString(1, path);
-        ResultSet rs = statement.executeQuery();
-        return rs.next();
-    }
-    
-    private void create(Address address) throws SQLException {
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.CREATE);
-        statement.setString(1, address.getNumber());
-        statement.setString(2, address.getStreet());
-        statement.setInt(3, address.getWard() == null ? 0 : address.getWard().getId());
-        statement.setInt(4, address.getDistrict().getId());
-        statement.setString(5, address.getPath());
-        statement.executeUpdate();
-    }
-    
-    private int getLatestId() throws SQLException {
-        int id = 0;
-        connection = connectionPool.getConnection();
-        connectionPool.releaseConnection(connection);
-        ResultSet rs = connection.prepareStatement(QUERY.ADDRESS.GET_LAST_ID).executeQuery();
-        if (rs.next()) id = rs.getInt("id");
-        return id;
-    }
+
 }

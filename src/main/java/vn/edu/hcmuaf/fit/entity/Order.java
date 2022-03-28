@@ -1,6 +1,7 @@
 package vn.edu.hcmuaf.fit.entity;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public class Order implements Serializable {
 	private String id;
 	private String uesrId;
-	private long totalPrice;
+	private BigInteger totalPrice;
 	private String address;
 	private Date dateCreated;
 	private Date lastUpdated;
@@ -17,7 +18,7 @@ public class Order implements Serializable {
 	public Order() {
 	}
 	
-	public Order(String id, String uesrId, long totalPrice, String address, Date dateCreated, Date lastUpdated, List<OrderItem> orderItems) {
+	public Order(String id, String uesrId, BigInteger totalPrice, String address, Date dateCreated, Date lastUpdated, List<OrderItem> orderItems) {
 		this.id = id;
 		this.uesrId = uesrId;
 		this.totalPrice = totalPrice;
@@ -43,11 +44,11 @@ public class Order implements Serializable {
 		this.uesrId = uesrId;
 	}
 	
-	public long getTotalPrice() {
+	public BigInteger getTotalPrice() {
 		return totalPrice;
 	}
 	
-	public void setTotalPrice(long totalPrice) {
+	public void setTotalPrice(BigInteger totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 	

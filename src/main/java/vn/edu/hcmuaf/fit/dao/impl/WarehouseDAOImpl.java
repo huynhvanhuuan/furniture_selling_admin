@@ -1,13 +1,14 @@
 package vn.edu.hcmuaf.fit.dao.impl;
 
+import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.dao.ProductDAO;
 import vn.edu.hcmuaf.fit.dao.WarehouseDAO;
-import vn.edu.hcmuaf.fit.database.IConnectionPool;
 import vn.edu.hcmuaf.fit.database.QUERY;
 import vn.edu.hcmuaf.fit.dto.product.Color;
 import vn.edu.hcmuaf.fit.dto.product.Material;
+import vn.edu.hcmuaf.fit.entity.Warehouse;
 import vn.edu.hcmuaf.fit.model.Product;
-import vn.edu.hcmuaf.fit.model.ProductDetail;
+import vn.edu.hcmuaf.fit.model.Warehouse;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +23,7 @@ import java.util.List;
 public class WarehouseDAOImpl implements WarehouseDAO {
 	private final IConnectionPool connectionPool;
 	private Connection connection;
+
 	private final ProductDAO productDAO;
 	
 	public WarehouseDAOImpl(IConnectionPool connectionPool) {
@@ -30,8 +32,8 @@ public class WarehouseDAOImpl implements WarehouseDAO {
 	}
 	
 	@Override
-	public List<ProductDetail> getProductList() throws SQLException, ParseException {
-		List<ProductDetail> list = new ArrayList<>();
+	public List<Warehouse> getProductList() throws SQLException, ParseException {
+		List<Warehouse> list = new ArrayList<>();
 		connection = connectionPool.getConnection();
 		connectionPool.releaseConnection(connection);
 		ResultSet rs = connection.prepareStatement(QUERY.WAREHOUSE.GET_PRODUCT_LIST).executeQuery();
@@ -47,15 +49,15 @@ public class WarehouseDAOImpl implements WarehouseDAO {
 			Date dateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("date_created"));
 			Date lastUpdated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("last_updated"));
 			boolean active = rs.getBoolean("active");
-			ProductDetail productDetail = new ProductDetail(sku, product, image, color, material, unitPrice, unitInStock, discount, dateCreated, lastUpdated, active);
-			list.add(productDetail);
+			Warehouse Warehouse = new Warehouse(sku, product, image, color, material, unitPrice, unitInStock, discount, dateCreated, lastUpdated, active);
+			list.add(Warehouse);
 		}
 		return list;
 	}
 	
 	@Override
-	public List<ProductDetail> getProductList(Product product) throws SQLException, ParseException {
-		List<ProductDetail> list = new ArrayList<>();
+	public List<Warehouse> getProductList(Product product) throws SQLException, ParseException {
+		List<Warehouse> list = new ArrayList<>();
 		connection = connectionPool.getConnection();
 		connectionPool.releaseConnection(connection);
 		PreparedStatement statement = connection.prepareStatement(QUERY.WAREHOUSE.GET_PRODUCT_LIST_WITH_PRODUCT_ID);
@@ -72,8 +74,8 @@ public class WarehouseDAOImpl implements WarehouseDAO {
 			Date dateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("date_created"));
 			Date lastUpdated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("last_updated"));
 			boolean active = rs.getBoolean("active");
-			ProductDetail productDetail = new ProductDetail(sku, product, image, color, material, unitPrice, unitInStock, discount, dateCreated, lastUpdated, active);
-			list.add(productDetail);
+			Warehouse Warehouse = new Warehouse(sku, product, image, color, material, unitPrice, unitInStock, discount, dateCreated, lastUpdated, active);
+			list.add(Warehouse);
 		}
 		return list;
 	}
@@ -110,8 +112,8 @@ public class WarehouseDAOImpl implements WarehouseDAO {
 	}
 	
 	@Override
-	public ProductDetail getProduct(String sku) throws SQLException, ParseException {
-		ProductDetail productDetail = null;
+	public Warehouse getProduct(String sku) throws SQLException, ParseException {
+		Warehouse Warehouse = null;
 		connection = connectionPool.getConnection();
 		connectionPool.releaseConnection(connection);
 		PreparedStatement statement = connection.prepareStatement(QUERY.WAREHOUSE.GET_PRODUCT);
@@ -131,9 +133,9 @@ public class WarehouseDAOImpl implements WarehouseDAO {
 			Date dateCreated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("date_created"));
 			Date lastUpdated = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("last_updated"));
 			boolean active = rs.getBoolean("active");
-			productDetail = new ProductDetail(sku, product, image, color, material, unitPrice, unitInStock, discount, dateCreated, lastUpdated, active);
+			Warehouse = new Warehouse(sku, product, image, color, material, unitPrice, unitInStock, discount, dateCreated, lastUpdated, active);
 		}
-		return productDetail;
+		return Warehouse;
 	}
 	
 	@Override
@@ -174,35 +176,35 @@ public class WarehouseDAOImpl implements WarehouseDAO {
 	}
 	
 	@Override
-	public void create(ProductDetail productDetail) throws SQLException {
+	public void create(Warehouse Warehouse) throws SQLException {
 		connection = connectionPool.getConnection();
 		PreparedStatement statement = connection.prepareStatement(QUERY.WAREHOUSE.GET_MATERIAL);
-		statement.setString(1, productDetail.getSku());
-		statement.setInt(2, productDetail.getProduct().getId());
-		statement.setString(3, productDetail.getImage());
-		statement.setInt(4, productDetail.getColor().getId());
-		statement.setString(5, productDetail.getMaterial().getSku());
-		statement.setLong(6, productDetail.getUnitPrice());
-		statement.setInt(7, productDetail.getUnitInStock());
-		statement.setInt(8, productDetail.getDiscount());
+		statement.setString(1, Warehouse.getSku());
+		statement.setInt(2, Warehouse.getProduct().getId());
+		statement.setString(3, Warehouse.getImage());
+		statement.setInt(4, Warehouse.getColor().getId());
+		statement.setString(5, Warehouse.getMaterial().getSku());
+		statement.setLong(6, Warehouse.getUnitPrice());
+		statement.setInt(7, Warehouse.getUnitInStock());
+		statement.setInt(8, Warehouse.getDiscount());
 		statement.executeUpdate();
 		connectionPool.releaseConnection(connection);
 	}
 	
 	@Override
-	public void update(String sku, ProductDetail productDetail) throws SQLException {
+	public void update(String sku, Warehouse Warehouse) throws SQLException {
 		connection = connectionPool.getConnection();
 		PreparedStatement statement = connection.prepareStatement(QUERY.WAREHOUSE.UPDATE);
-		statement.setString(1, productDetail.getSku());
-		statement.setInt(2, productDetail.getProduct().getId());
-		statement.setString(3, productDetail.getImage());
-		statement.setInt(4, productDetail.getColor().getId());
-		statement.setString(5, productDetail.getMaterial().getSku());
-		statement.setLong(6, productDetail.getUnitPrice());
-		statement.setInt(7, productDetail.getUnitInStock());
-		statement.setInt(8, productDetail.getDiscount());
+		statement.setString(1, Warehouse.getSku());
+		statement.setInt(2, Warehouse.getProduct().getId());
+		statement.setString(3, Warehouse.getImage());
+		statement.setInt(4, Warehouse.getColor().getId());
+		statement.setString(5, Warehouse.getMaterial().getSku());
+		statement.setLong(6, Warehouse.getUnitPrice());
+		statement.setInt(7, Warehouse.getUnitInStock());
+		statement.setInt(8, Warehouse.getDiscount());
 		statement.setString(9, sku);
-		statement.setString(10, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(productDetail.getDateCreated()));
+		statement.setString(10, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Warehouse.getDateCreated()));
 		statement.executeUpdate();
 		connectionPool.releaseConnection(connection);
 	}

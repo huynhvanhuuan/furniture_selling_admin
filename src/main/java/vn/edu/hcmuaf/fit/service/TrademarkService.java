@@ -1,12 +1,12 @@
 package vn.edu.hcmuaf.fit.service;
 
-import vn.edu.hcmuaf.fit.model.Trademark;
+import vn.edu.hcmuaf.fit.entity.Trademark;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public interface TrademarkService {
-	List<Trademark> getList() throws SQLException;
+	AppServiceResult<List<TrademarkDto>> getList() throws SQLException;
 	List<String> getListNameHasProduct() throws SQLException;
 	Trademark get(int id) throws SQLException;
 	void create(Trademark trademark) throws SQLException;

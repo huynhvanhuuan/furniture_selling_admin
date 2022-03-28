@@ -1,14 +1,12 @@
 package vn.edu.hcmuaf.fit.dao;
 
-import vn.edu.hcmuaf.fit.dto.wishlist.Wishlist;
-import vn.edu.hcmuaf.fit.model.User;
+import vn.edu.hcmuaf.fit.entity.Wishlist;
 
-import java.sql.SQLException;
-import java.text.ParseException;
+import java.util.List;
 
-public interface WishlistDAO {
-    Wishlist getList(User user) throws SQLException, ParseException;
-    void add(String userId, String productSku) throws SQLException;
-    void remove(String userId, String productSku) throws SQLException;
-    void removeAll(String userId) throws SQLException;
+public interface WishlistDAO extends BaseDAO<Wishlist> {
+    List<Wishlist> findByUserId(Long userId);
+    List<Wishlist> findByProductSku(String productSku);
+    void remove(String userId, String productSku);
+    void removeAll(String userId);
 }

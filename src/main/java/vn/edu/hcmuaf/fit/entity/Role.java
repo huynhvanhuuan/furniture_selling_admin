@@ -2,23 +2,23 @@ package vn.edu.hcmuaf.fit.entity;
 
 import java.io.Serializable;
 
-public class Material implements Serializable {
-    private Long id;
+public class Role implements Serializable {
+    private long id;
     private String name;
 
-    public Material() {
+    public Role() {
     }
 
-    public Material(Long id, String name) {
+    public Role(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

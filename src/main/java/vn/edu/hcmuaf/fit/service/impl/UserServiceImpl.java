@@ -9,6 +9,9 @@ import vn.edu.hcmuaf.fit.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 public class UserServiceImpl implements UserService {
@@ -53,5 +56,17 @@ public class UserServiceImpl implements UserService {
 
     private boolean checkUser(String email) throws SQLException {
         return userDAO.checkUser(email);
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest sha256 = null;
+            sha256 = MessageDigest.getInstance("SHA-256");
+            byte[] hash = sha256.digest(password.getBytes());
+            BigInteger number = new BigInteger(1, hash);
+            return number.toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
     }
 }

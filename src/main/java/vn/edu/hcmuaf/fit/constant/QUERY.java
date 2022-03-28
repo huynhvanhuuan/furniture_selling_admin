@@ -82,6 +82,7 @@ public class QUERY {
 
     /* ADDRESS */
     public static class ADDRESS {
+        public static final String FIND_ALL = "select * from address";
         public static final String FIND_BY_TRADEMARK_ID = "select a.* from address a inner join trademark_address ta on a.id = ta.address_id where trademark_id = ?";
         public static final String FIND_BY_USER_ID = "select a.* from address a inner join user_address ua on a.id = ua.address_id where user_id = ?";
         public static final String FIND_BY_ID = "select * from address where id = ?";

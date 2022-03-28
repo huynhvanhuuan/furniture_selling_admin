@@ -4,9 +4,8 @@ import vn.edu.hcmuaf.fit.entity.Address;
 
 import java.util.List;
 
-public interface AddressDAO {
-	List<Address> findByTrademarkId(int trademarkId);
-	List<Address> findByUserId(String userId);
-	void createTrademarkAddress(int trademarkId, Address address);
-	void createUserAddress(String userId, Address address);
+public interface AddressDAO extends BaseDAO<Address> {
+	List<Address> findByTrademarkId(Long trademarkId);
+	List<Address> findByUserId(int userId);
+	Address findByPath(String path);
 }
