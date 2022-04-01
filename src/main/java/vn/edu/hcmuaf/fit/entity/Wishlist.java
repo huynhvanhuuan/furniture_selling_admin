@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 public class Wishlist implements Serializable {
 	private User user;
-	private Warehouse productList;
+	private ProductDetail productList;
 	
 	public Wishlist() {
 	}
 	
-	public Wishlist(User user, Warehouse productList) {
+	public Wishlist(User user, ProductDetail productList) {
 		this.user = user;
 		this.productList = productList;
 	}
@@ -22,11 +22,11 @@ public class Wishlist implements Serializable {
 		this.user = user;
 	}
 	
-	public Warehouse getListProduct() {
+	public ProductDetail getListProduct() {
 		return productList;
 	}
 	
-	public void setListProduct(Warehouse productList) {
+	public void setListProduct(ProductDetail productList) {
 		this.productList = productList;
 	}
 

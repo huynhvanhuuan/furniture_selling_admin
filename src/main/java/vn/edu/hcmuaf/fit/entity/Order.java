@@ -2,9 +2,7 @@ package vn.edu.hcmuaf.fit.entity;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Order implements Serializable {
 	private String id;
@@ -13,12 +11,12 @@ public class Order implements Serializable {
 	private String address;
 	private Date dateCreated;
 	private Date lastUpdated;
-	private List<OrderItem> orderItems;
+	private Set<OrderItem> orderItems = new HashSet<>();
 	
 	public Order() {
 	}
 	
-	public Order(String id, String uesrId, BigInteger totalPrice, String address, Date dateCreated, Date lastUpdated, List<OrderItem> orderItems) {
+	public Order(String id, String uesrId, BigInteger totalPrice, String address, Date dateCreated, Date lastUpdated, Set<OrderItem> orderItems) {
 		this.id = id;
 		this.uesrId = uesrId;
 		this.totalPrice = totalPrice;
@@ -76,16 +74,16 @@ public class Order implements Serializable {
 		this.lastUpdated = lastUpdated;
 	}
 	
-	public List<OrderItem> getOrderItems() {
+	public Set<OrderItem> getOrderItems() {
 		return orderItems;
 	}
 	
-	public void setOrderItems(List<OrderItem> orderItems) {
+	public void setOrderItems(Set<OrderItem> orderItems) {
 		this.orderItems = orderItems;
 	}
 
 	public void addItem(OrderItem item) {
-		if (orderItems == null) orderItems = new ArrayList<>();
+		if (orderItems == null) orderItems = new HashSet<>();
 		orderItems.add(item);
 		item.setOrder(this);
 	}

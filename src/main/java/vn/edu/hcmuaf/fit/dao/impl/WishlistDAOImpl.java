@@ -3,10 +3,10 @@ package vn.edu.hcmuaf.fit.dao.impl;
 import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.constant.QUERY;
 import vn.edu.hcmuaf.fit.dao.UserDAO;
-import vn.edu.hcmuaf.fit.dao.WarehouseDAO;
+import vn.edu.hcmuaf.fit.dao.ProductDetailDAO;
 import vn.edu.hcmuaf.fit.dao.WishlistDAO;
 import vn.edu.hcmuaf.fit.entity.User;
-import vn.edu.hcmuaf.fit.entity.Warehouse;
+import vn.edu.hcmuaf.fit.entity.ProductDetail;
 import vn.edu.hcmuaf.fit.entity.Wishlist;
 
 import java.sql.Connection;
@@ -21,12 +21,12 @@ public class WishlistDAOImpl implements WishlistDAO {
     private Connection connection;
 
     private final UserDAO userDAO;
-    private final WarehouseDAO warehouseDAO;
+    private final ProductDetailDAO warehouseDAO;
 
     public WishlistDAOImpl(IConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
         this.userDAO = new UserDAOImpl(connectionPool);
-        this.warehouseDAO = new WarehouseDAOImpl(connectionPool);
+        this.warehouseDAO = new ProductDetailDAOImpl(connectionPool);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class WishlistDAOImpl implements WishlistDAO {
             statement.setLong(1, user.getId());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Warehouse warehouse = warehouseDAO.findBySku(rs.getLong("product_sku"));
+                ProductDetail warehouse = warehouseDAO.findBySku(rs.getLong("product_sku"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

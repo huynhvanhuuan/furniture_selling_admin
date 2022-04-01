@@ -2,10 +2,12 @@ package vn.edu.hcmuaf.fit.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Product implements Serializable {
-    private long id;
+    private Long id;
     private String name;
     private String size;
     private String description;
@@ -14,13 +16,13 @@ public class Product implements Serializable {
     private Date dateCreated;
     private Date lastUpdated;
     private boolean active;
-    private List<Warehouse> products;
+    private Set<ProductDetail> products = new HashSet<>();
 
     public Product() {
     }
     
-    public Product(long id, String name, String size, String description, Trademark trademark, Category category,
-                   Date dateCreated, Date lastUpdated, boolean active) {
+    public Product(Long id, String name, String size, String description, Trademark trademark, Category category,
+                   Date dateCreated, Date lastUpdated, boolean active, Set<ProductDetail> products) {
         this.id = id;
         this.name = name;
         this.size = size;
@@ -30,13 +32,14 @@ public class Product implements Serializable {
         this.dateCreated = dateCreated;
         this.lastUpdated = lastUpdated;
         this.active = active;
+        this.products = products;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -104,12 +107,18 @@ public class Product implements Serializable {
         this.active = active;
     }
     
-    public List<Warehouse> getProducts() {
+    public Set<ProductDetail> getProducts() {
         return products;
     }
     
-    public void setProducts(List<Warehouse> products) {
+    public void setProducts(Set<ProductDetail> products) {
         this.products = products;
+    }
+
+    public void addProduct(ProductDetail productDetail) {
+        if (products == null) products = new HashSet<>();
+        products.add(productDetail);
+        productDetail.setProduct(this);
     }
 
 }

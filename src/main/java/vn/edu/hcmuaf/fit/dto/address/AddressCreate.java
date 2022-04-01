@@ -5,17 +5,10 @@ public class AddressCreate {
     private String street;
     private Long wardId;
     private Long districtId;
+    private Long provinceId;
     private String path;
 
     public AddressCreate() {
-    }
-
-    public AddressCreate(String number, String street, Long wardId, Long districtId, String path) {
-        this.number = number;
-        this.street = street;
-        this.wardId = wardId;
-        this.districtId = districtId;
-        this.path = path;
     }
 
     public String getNumber() {
@@ -48,6 +41,14 @@ public class AddressCreate {
 
     public void setDistrictId(Long districtId) {
         this.districtId = districtId;
+    }
+
+    public Long getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
     }
 
     public String getPath() {

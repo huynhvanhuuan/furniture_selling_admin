@@ -3,7 +3,7 @@ package vn.edu.hcmuaf.fit.dao.impl;
 import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.constant.QUERY;
 import vn.edu.hcmuaf.fit.dao.OrderDAO;
-import vn.edu.hcmuaf.fit.dao.WarehouseDAO;
+import vn.edu.hcmuaf.fit.dao.ProductDetailDAO;
 import vn.edu.hcmuaf.fit.model.Order;
 import vn.edu.hcmuaf.fit.model.OrderItem;
 import vn.edu.hcmuaf.fit.model.ProductDetail;
@@ -22,11 +22,11 @@ import java.util.List;
 public class OrderDAOImpl implements OrderDAO {
     private final IConnectionPool connectionPool;
     private Connection connection;
-    private final WarehouseDAO warehouseDAO;
+    private final ProductDetailDAO warehouseDAO;
 
     public OrderDAOImpl(IConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
-        warehouseDAO = new WarehouseDAOImpl(connectionPool);
+        warehouseDAO = new ProductDetailDAOImpl(connectionPool);
     }
 
     @Override

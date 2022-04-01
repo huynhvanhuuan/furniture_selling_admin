@@ -3,34 +3,45 @@ package vn.edu.hcmuaf.fit.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Warehouse implements Serializable {
+public class ProductDetail implements Serializable {
+    private Long id;
     private String sku;
     private Product product;
-    private String image;
     private Color color;
     private Material material;
-    private long unitPrice;
+    private String imageUrl;
+    private Long unitPrice;
     private int unitInStock;
     private int discount;
     private Date dateCreated;
     private Date lastUpdated;
     private boolean active;
 
-    public Warehouse() {
+    public ProductDetail() {
     }
 
-    public Warehouse(String sku, Product product, String image, Color color, Material material, long unitPrice, int unitInStock, int discount, Date dateCreated, Date lastUpdated, boolean active) {
+    public ProductDetail(Long id, String sku, Product product, Color color, Material material, String imageUrl,
+                         long unitPrice, int unitInStock, int discount, Date dateCreated, Date lastUpdated, boolean active) {
+        this.id = id;
         this.sku = sku;
         this.product = product;
-        this.image = image;
         this.color = color;
         this.material = material;
+        this.imageUrl = imageUrl;
         this.unitPrice = unitPrice;
         this.unitInStock = unitInStock;
         this.discount = discount;
         this.dateCreated = dateCreated;
         this.lastUpdated = lastUpdated;
         this.active = active;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getSku() {
@@ -44,19 +55,11 @@ public class Warehouse implements Serializable {
     public Product getProduct() {
         return product;
     }
-    
+
     public void setProduct(Product product) {
         this.product = product;
     }
-    
-    public String getImage() {
-        return image;
-    }
-    
-    public void setImage(String image) {
-        this.image = image;
-    }
-    
+
     public Color getColor() {
         return color;
     }
@@ -71,6 +74,14 @@ public class Warehouse implements Serializable {
 
     public void setMaterial(Material material) {
         this.material = material;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public long getUnitPrice() {

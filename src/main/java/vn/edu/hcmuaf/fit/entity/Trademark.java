@@ -2,35 +2,31 @@ package vn.edu.hcmuaf.fit.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Trademark implements Serializable {
-    private int id;
+    private Long id;
     private String name;
     private String website;
-    private List<Address> addresses;
+    private Set<Address> addresses = new HashSet<>();
 
     public Trademark() {
     }
 
-    public Trademark(int id, String name, String website) {
-        this.id = id;
-        this.name = name;
-        this.website = website;
-    }
-
-    public Trademark(int id, String name, String website, List<Address> addresses) {
+    public Trademark(Long id, String name, String website, Set<Address> addresses) {
         this.id = id;
         this.name = name;
         this.website = website;
         this.addresses = addresses;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -50,18 +46,11 @@ public class Trademark implements Serializable {
         this.website = website;
     }
 
-    public List<Address> getAddresses() {
+    public Set<Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(List<Address> addresses) {
+    public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
-    }
-
-    public void addAddress(Address address) {
-        if (addresses == null) {
-            addresses = new ArrayList<>();
-        }
-        this.addresses.add(address);
     }
 }

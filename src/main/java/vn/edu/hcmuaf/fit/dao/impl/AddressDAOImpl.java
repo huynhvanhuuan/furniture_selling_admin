@@ -16,15 +16,11 @@ public class AddressDAOImpl implements AddressDAO {
     private final IConnectionPool connectionPool;
     private Connection connection;
 
-    private final TrademarkDAO trademarkDAO;
-    private final UserDAO userDAO;
     private final DistrictDAO districtDAO;
     private final WardDAO wardDAO;
 
     public AddressDAOImpl(IConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
-        this.trademarkDAO = new TrademarkDAOImpl(connectionPool);
-        this.userDAO = new UserDAOImpl(connectionPool);
         this.districtDAO = new DistrictDAOImpl(connectionPool);
         this.wardDAO = new WardDAOImpl(connectionPool);
     }
@@ -63,7 +59,7 @@ public class AddressDAOImpl implements AddressDAO {
             PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_BY_ID);
             statement.setLong(1, id);
             ResultSet rs = statement.executeQuery();
-
+            if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
             if (rs.next()) {
                 String number = rs.getString("number");
                 String street = rs.getString("street");
@@ -113,7 +109,6 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public List<Address> findByTrademarkId(Long trademarkId) {
-        Trademark trademark = trademarkDAO.findById(trademarkId);
         List<Address> addresses = new ArrayList<>();
         try {
             connection = connectionPool.getConnection();
@@ -121,7 +116,17 @@ public class AddressDAOImpl implements AddressDAO {
             PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_BY_TRADEMARK_ID);
             statement.setLong(1, trademarkId);
             ResultSet rs = statement.executeQuery();
-            addToList(rs, addresses);
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String number = rs.getString("number");
+                String street = rs.getString("street");
+                Ward ward = wardDAO.findById(rs.getLong("ward_id"));
+                District district = districtDAO.findById(rs.getLong("district_id"));
+                String path = rs.getString("path");
+
+                Address address = new Address(id, number, street, ward, district, path);
+                addresses.add(address);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return addresses;
@@ -130,27 +135,22 @@ public class AddressDAOImpl implements AddressDAO {
     }
     
     @Override
-    public List<Address> findByUserId(int userId) {
-        User user = userDAO.findById(userId);
+    public List<Address> findByUserId(Long userId) {
         List<Address> addresses = new ArrayList<>();
         connection = connectionPool.getConnection();
         try {
             PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_BY_USER_ID);
-            statement.setInt(1, userId);
+            statement.setLong(1, userId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("id");
+                Long id = rs.getLong("id");
                 String number = rs.getString("number");
                 String street = rs.getString("street");
-                int wardId = rs.getInt("ward_id");
-                int districtId = rs.getInt("district_id");
+                Ward ward = wardDAO.findById(rs.getLong("ward_id"));
+                District district = districtDAO.findById(rs.getLong("district_id"));
                 String path = rs.getString("path");
-                Address address;
-                if (wardId == 0) address = new Address(id, number, street, null, getDistrict(districtId), path);
-                else {
-                    Ward ward = getWard(wardId);
-                    address = new Address(id, number, street, ward, ward.getDistrict(), path);
-                }
+
+                Address address = new Address(id, number, street, ward, district, path);
                 addresses.add(address);
             }
         } catch (SQLException e) {
@@ -163,20 +163,28 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public Address findByPath(String path) {
-        return null;
-    }
+        Address address = null;
+        connection = connectionPool.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_BY_PATH);
+            statement.setString(1, path);
+            ResultSet rs = statement.executeQuery();
+            if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
+            if (rs.next()) {
+                long id = rs.getLong("id");
+                String number = rs.getString("number");
+                String street = rs.getString("street");
+                Ward ward = wardDAO.findById(rs.getLong("ward_id"));
+                District district = districtDAO.findById(rs.getLong("district_id"));
 
-    private void addToList(ResultSet rs, List<Address> addresses) throws SQLException {
-        while (rs.next()) {
-            long id = rs.getLong("id");
-            String number = rs.getString("number");
-            String street = rs.getString("street");
-            Ward ward = wardDAO.findById(rs.getLong("ward_id"));
-            District district = districtDAO.findById(rs.getLong("district_id"));
-            String path = rs.getString("path");
-            Address address = new Address(id, number, street, ward, district, path);
-            addresses.add(address);
+                address = new Address(id, number, street, ward, district, path);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
+        connectionPool.releaseConnection(connection);
+        return address;
     }
 
 }

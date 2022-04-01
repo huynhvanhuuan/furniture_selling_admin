@@ -6,18 +6,10 @@ public class AddressUpdate {
     private String street;
     private Long wardId;
     private Long districtId;
+    private Long provinceId;
     private String path;
 
     public AddressUpdate() {
-    }
-
-    public AddressUpdate(Long id, String number, String street, Long wardId, Long districtId, String path) {
-        this.id = id;
-        this.number = number;
-        this.street = street;
-        this.wardId = wardId;
-        this.districtId = districtId;
-        this.path = path;
     }
 
     public Long getId() {
@@ -58,6 +50,14 @@ public class AddressUpdate {
 
     public void setDistrictId(Long districtId) {
         this.districtId = districtId;
+    }
+
+    public Long getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
     }
 
     public String getPath() {

@@ -3,24 +3,24 @@ package vn.edu.hcmuaf.fit.entity;
 import java.io.Serializable;
 
 public class Color implements Serializable {
-	private int id;
+	private Long id;
 	private String name;
 	private String hex;
 	
 	public Color() {
 	}
 	
-	public Color(int id, String name, String hex) {
+	public Color(Long id, String name, String hex) {
 		this.id = id;
 		this.name = name;
 		this.hex = hex;
 	}
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	

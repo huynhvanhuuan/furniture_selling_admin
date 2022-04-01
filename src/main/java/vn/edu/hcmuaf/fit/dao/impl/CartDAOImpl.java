@@ -1,7 +1,7 @@
 package vn.edu.hcmuaf.fit.dao.impl;
 
 import vn.edu.hcmuaf.fit.dao.CartDAO;
-import vn.edu.hcmuaf.fit.dao.WarehouseDAO;
+import vn.edu.hcmuaf.fit.dao.ProductDetailDAO;
 import vn.edu.hcmuaf.fit.database.IConnectionPool;
 import vn.edu.hcmuaf.fit.database.QUERY;
 import vn.edu.hcmuaf.fit.dto.cart.CartItem;
@@ -19,11 +19,11 @@ import java.util.List;
 public class CartDAOImpl implements CartDAO {
 	private final IConnectionPool connectionPool;
 	private Connection connection;
-	private final WarehouseDAO warehouseDAO;
+	private final ProductDetailDAO warehouseDAO;
 	
 	public CartDAOImpl(IConnectionPool connectionPool) {
 		this.connectionPool = connectionPool;
-		this.warehouseDAO = new WarehouseDAOImpl(connectionPool);
+		this.warehouseDAO = new ProductDetailDAOImpl(connectionPool);
 	}
 	
 	@Override

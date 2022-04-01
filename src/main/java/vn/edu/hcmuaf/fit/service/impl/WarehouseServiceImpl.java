@@ -1,8 +1,8 @@
 package vn.edu.hcmuaf.fit.service.impl;
 
-import vn.edu.hcmuaf.fit.dao.WarehouseDAO;
-import vn.edu.hcmuaf.fit.dao.impl.WarehouseDAOImpl;
-import vn.edu.hcmuaf.fit.entity.Warehouse;
+import vn.edu.hcmuaf.fit.dao.ProductDetailDAO;
+import vn.edu.hcmuaf.fit.dao.impl.ProductDetailDAOImpl;
+import vn.edu.hcmuaf.fit.entity.ProductDetail;
 import vn.edu.hcmuaf.fit.infrastructure.DbManager;
 import vn.edu.hcmuaf.fit.service.WarehouseService;
 
@@ -11,19 +11,19 @@ import java.text.ParseException;
 import java.util.List;
 
 public class WarehouseServiceImpl implements WarehouseService {
-	private final WarehouseDAO warehouseDAO;
+	private final ProductDetailDAO warehouseDAO;
 	
 	public WarehouseServiceImpl() {
-		this.warehouseDAO = new WarehouseDAOImpl(DbManager.connectionPool);
+		this.warehouseDAO = new ProductDetailDAOImpl(DbManager.connectionPool);
 	}
 	
 	@Override
-	public List<Warehouse> getProductList() throws SQLException, ParseException {
+	public List<ProductDetail> getProductList() throws SQLException, ParseException {
 		return warehouseDAO.getProductList();
 	}
 	
 	@Override
-	public List<Warehouse> getProductList(Product product) throws SQLException, ParseException {
+	public List<ProductDetail> getProductList(Product product) throws SQLException, ParseException {
 		return warehouseDAO.getProductList(product);
 	}
 	

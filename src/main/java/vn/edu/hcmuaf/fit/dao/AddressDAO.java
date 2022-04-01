@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface AddressDAO extends BaseDAO<Address> {
 	List<Address> findByTrademarkId(Long trademarkId);
-	List<Address> findByUserId(int userId);
+	List<Address> findByUserId(Long userId);
 	Address findByPath(String path);
 }

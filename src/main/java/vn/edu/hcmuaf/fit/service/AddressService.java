@@ -9,11 +9,11 @@ import vn.edu.hcmuaf.fit.dto.address.AddressUpdate;
 import java.util.List;
 
 public interface AddressService {
-	AppServiceResult<List<AddressDto>> findAddressByTrademarkId(int trademarkId);
-	AppServiceResult<List<AddressDto>> findAddressByUserId(int userId);
-	AppServiceResult<AddressDto> findAddressById(int addressId);
+	AppServiceResult<List<AddressDto>> findAddressByTrademarkId(Long trademarkId);
+	AppServiceResult<List<AddressDto>> findAddressByUserId(Long userId);
+	AppServiceResult<AddressDto> findAddressById(Long id);
 	AppServiceResult<AddressDto> findAddressByPath(String path);
-	void createAddress(AddressCreate address);
+	AppServiceResult<AddressDto> createAddress(AddressCreate address);
 	AppBaseResult updateAddress(AddressUpdate address);
-	AppBaseResult delete(int addressId);
+	AppBaseResult deleteAddress(Long id);
 }

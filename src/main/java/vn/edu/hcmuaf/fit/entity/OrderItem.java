@@ -3,23 +3,23 @@ package vn.edu.hcmuaf.fit.entity;
 import java.io.Serializable;
 
 public class OrderItem implements Serializable {
-	private Warehouse product;
+	private ProductDetail product;
 	private int quantity;
 	private Order order;
 	
 	public OrderItem() {
 	}
 	
-	public OrderItem(Warehouse product, int quantity) {
+	public OrderItem(ProductDetail product, int quantity) {
 		this.product = product;
 		this.quantity = quantity;
 	}
 	
-	public Warehouse getProduct() {
+	public ProductDetail getProduct() {
 		return product;
 	}
 	
-	public void setProduct(Warehouse product) {
+	public void setProduct(ProductDetail product) {
 		this.product = product;
 	}
 	

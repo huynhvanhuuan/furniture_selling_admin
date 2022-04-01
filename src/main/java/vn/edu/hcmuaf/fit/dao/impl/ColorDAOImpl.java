@@ -2,8 +2,8 @@ package vn.edu.hcmuaf.fit.dao.impl;
 
 import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.constant.QUERY;
-import vn.edu.hcmuaf.fit.dao.MaterialDAO;
-import vn.edu.hcmuaf.fit.entity.Material;
+import vn.edu.hcmuaf.fit.dao.ColorDAO;
+import vn.edu.hcmuaf.fit.entity.Color;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,58 +12,59 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaterialDAOImpl implements MaterialDAO {
+public class ColorDAOImpl implements ColorDAO {
     private final IConnectionPool connectionPool;
     private Connection connection;
 
-    public MaterialDAOImpl(IConnectionPool connectionPool) {
+    public ColorDAOImpl(IConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
     @Override
-    public List<Material> findAll() {
-        List<Material> materials = new ArrayList<>();
+    public List<Color> findAll() {
+        List<Color> colors = new ArrayList<>();
         connection = connectionPool.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement(QUERY.MATERIAL.FIND_ALL);
-            ResultSet rs = statement.executeQuery();
+            ResultSet rs = connection.prepareStatement(QUERY.COLOR.FIND_ALL).executeQuery();
             while (rs.next()) {
-                Long id = rs.getLong("id");
+                long id = rs.getLong("id");
                 String name = rs.getString("name");
-                Material material = new Material(id, name);
-                materials.add(material);
+                String hex = rs.getString("hex");
+                Color color = new Color(id, name, hex);
+                colors.add(color);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return materials;
+            return colors;
         }
         connectionPool.releaseConnection(connection);
-        return materials;
+        return colors;
     }
 
     @Override
-    public Material findById(Long id) {
-        Material material = null;
+    public Color findById(Long id) {
+        Color color = null;
         connection = connectionPool.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement(QUERY.MATERIAL.FIND_BY_ID);
+            PreparedStatement statement = connection.prepareStatement(QUERY.COLOR.FIND_BY_ID);
             statement.setLong(1, id);
             ResultSet rs = statement.executeQuery();
             if (!rs.isBeforeFirst() && rs.getRow() == 0) return null;
             if (rs.next()) {
                 String name = rs.getString("name");
-                material = new Material(id, name);
+                String hex = rs.getString("hex");
+                color = new Color(id, name, hex);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
         connectionPool.releaseConnection(connection);
-        return material;
+        return color;
     }
 
     @Override
-    public void save(Material object) {
+    public void save(Color object) {
 
     }
 

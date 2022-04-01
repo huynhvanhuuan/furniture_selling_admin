@@ -11,7 +11,6 @@ import vn.edu.hcmuaf.fit.dto.category.CategoryDto;
 import vn.edu.hcmuaf.fit.dto.category.CategoryUpdate;
 import vn.edu.hcmuaf.fit.entity.Category;
 import vn.edu.hcmuaf.fit.service.CategoryService;
-import vn.edu.hcmuaf.fit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +30,10 @@ public class CategoryServiceImpl implements CategoryService {
 
 			categories.forEach(category -> result.add(CategoryDto.createFromEntity(category)));
 
-			return new AppServiceResult<List<CategoryDto>>(true, 0, "Succeed!", result);
+			return new AppServiceResult<>(true, 0, "Succeed!", result);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new AppServiceResult<List<CategoryDto>>(false, AppError.Unknown.errorCode(),
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
 					AppError.Unknown.errorMessage(), null);
 		}
 	}
@@ -45,13 +44,13 @@ public class CategoryServiceImpl implements CategoryService {
 			Category category = categoryDAO.findById(id);
 
 			if (category == null)
-				return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
 						"Category id is not exist: " + id, null);
 
-			return new AppServiceResult<CategoryDto>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
+			return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new AppServiceResult<CategoryDto>(false, AppError.Unknown.errorCode(),
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
 					AppError.Unknown.errorMessage(), null);
 		}
 	}
@@ -62,13 +61,13 @@ public class CategoryServiceImpl implements CategoryService {
 			Category category = categoryDAO.findBySku(sku);
 
 			if (category == null)
-				return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
 						"Category sku is not exist: " + sku, null);
 
-			return new AppServiceResult<CategoryDto>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
+			return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new AppServiceResult<CategoryDto>(false, AppError.Unknown.errorCode(),
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
 					AppError.Unknown.errorMessage(), null);
 		}
 	}
@@ -79,13 +78,13 @@ public class CategoryServiceImpl implements CategoryService {
 			Category category = categoryDAO.findByName(name);
 
 			if (category == null)
-				return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
 						"Category name is not exist: " + name, null);
 
-			return new AppServiceResult<CategoryDto>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
+			return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new AppServiceResult<CategoryDto>(false, AppError.Unknown.errorCode(),
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
 					AppError.Unknown.errorMessage(), null);
 		}
 	}
@@ -95,15 +94,15 @@ public class CategoryServiceImpl implements CategoryService {
 		try {
 			Category newCategory = new Category();
 
-			if (category.getName() == null) {
-				return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(),
+			if (category.getName() == null && category.getName().equals("")) {
+				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
 						"Name is required!", null);
 			}
 
 			List<Category> categories = categoryDAO.findAll();
 			for (Category c : categories) {
 				if (c.getName().equals(category.getName())) {
-					return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(), "Name is exist!", null);
+					return new AppServiceResult<>(false, AppError.Validattion.errorCode(), "Name is exist!", null);
 				}
 			}
 
@@ -113,10 +112,10 @@ public class CategoryServiceImpl implements CategoryService {
 
 			categoryDAO.save(newCategory);
 
-			return new AppServiceResult<CategoryDto>(true, 0, "Succeed!", CategoryDto.createFromEntity(newCategory));
+			return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(newCategory));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new AppServiceResult<CategoryDto>(false, AppError.Unknown.errorCode(),
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
 					AppError.Unknown.errorMessage(), null);
 		}
 	}
@@ -164,7 +163,6 @@ public class CategoryServiceImpl implements CategoryService {
 			} else {
 				return AppBaseResult.GenarateIsFailed(AppError.Validattion.errorCode(), "Category id is not exist: " + id);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return AppBaseResult.GenarateIsFailed(AppError.Unknown.errorCode(), AppError.Unknown.errorMessage());
@@ -179,13 +177,13 @@ public class CategoryServiceImpl implements CategoryService {
 			if (category != null) {
 				category.setActive(!category.isActive());
 				categoryDAO.save(category);
-				return new AppServiceResult<CategoryDto>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
+				return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
 			} else
-				return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(), "Category id is not exist: " + id, null);
+				return new AppServiceResult<>(false, AppError.Validattion.errorCode(), "Category id is not exist: " + id, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new AppServiceResult<CategoryDto>(false, AppError.Unknown.errorCode(),
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
 					AppError.Unknown.errorMessage(), null);
 		}
 	}
