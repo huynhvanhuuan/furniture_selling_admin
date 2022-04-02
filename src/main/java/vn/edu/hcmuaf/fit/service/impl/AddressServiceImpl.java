@@ -34,7 +34,7 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	@Override
-	public AppServiceResult<List<AddressDto>> findAddressByTrademarkId(Long trademarkId) {
+	public AppServiceResult<List<AddressDto>> getAddressByTrademarkId(Long trademarkId) {
 		try {
 			List<Address> entities = addressDAO.findByTrademarkId(trademarkId);
 
@@ -51,7 +51,7 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	@Override
-	public AppServiceResult<List<AddressDto>> findAddressByUserId(Long userId) {
+	public AppServiceResult<List<AddressDto>> getAddressByUserId(Long userId) {
 		try {
 			List<Address> entities = addressDAO.findByUserId(userId);
 
@@ -68,7 +68,7 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	@Override
-	public AppServiceResult<AddressDto> findAddressById(Long id) {
+	public AppServiceResult<AddressDto> getAddressById(Long id) {
 		try {
 			Address address = addressDAO.findById(id);
 
@@ -85,7 +85,7 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	@Override
-	public AppServiceResult<AddressDto> findAddressByPath(String path) {
+	public AppServiceResult<AddressDto> getAddressByPath(String path) {
 		try {
 			Address address = addressDAO.findByPath(path);
 
