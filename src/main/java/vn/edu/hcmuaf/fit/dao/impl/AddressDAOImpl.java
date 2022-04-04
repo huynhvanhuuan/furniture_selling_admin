@@ -27,28 +27,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public List<Address> findAll() {
-        List<Address> addresses = new ArrayList<>();
-        connection = connectionPool.getConnection();
-        try {
-            PreparedStatement statement = connection.prepareStatement(QUERY.ADDRESS.FIND_ALL);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                long id = rs.getLong("id");
-                String number = rs.getString("number");
-                String street = rs.getString("street");
-                Ward ward = wardDAO.findById(rs.getLong("ward_id"));
-                District district = districtDAO.findById(rs.getLong("district_id"));
-                String path = rs.getString("path");
-
-                Address address = new Address(id, number, street, ward, district, path);
-                addresses.add(address);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return addresses;
-        }
-        connectionPool.releaseConnection(connection);
-        return addresses;
+        return null;
     }
 
     @Override

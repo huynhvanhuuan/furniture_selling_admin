@@ -2,9 +2,7 @@ package vn.edu.hcmuaf.fit.service;
 
 import vn.edu.hcmuaf.fit.domain.AppBaseResult;
 import vn.edu.hcmuaf.fit.domain.AppServiceResult;
-import vn.edu.hcmuaf.fit.dto.address.AddressCreate;
-import vn.edu.hcmuaf.fit.dto.address.AddressDto;
-import vn.edu.hcmuaf.fit.dto.address.AddressUpdate;
+import vn.edu.hcmuaf.fit.dto.address.*;
 
 import java.util.List;
 
@@ -16,4 +14,12 @@ public interface AddressService {
 	AppServiceResult<AddressDto> createAddress(AddressCreate address);
 	AppBaseResult updateAddress(AddressUpdate address);
 	AppBaseResult deleteAddress(Long id);
+
+
+	AppServiceResult<List<ProvinceDto>> getProvinces();
+	AppServiceResult<ProvinceDto> getProvinceById(Long provinceId);
+	AppServiceResult<List<DistrictDto>> getDistricts();
+	AppServiceResult<DistrictDto> getDistrictById(Long districtId);
+	AppServiceResult<List<WardDto>> getWards();
+	AppServiceResult<WardDto> getWardById(Long wardId);
 }

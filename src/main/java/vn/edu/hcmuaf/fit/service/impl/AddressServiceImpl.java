@@ -4,17 +4,18 @@ import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.constant.AppError;
 import vn.edu.hcmuaf.fit.dao.AddressDAO;
 import vn.edu.hcmuaf.fit.dao.DistrictDAO;
+import vn.edu.hcmuaf.fit.dao.ProvinceDAO;
 import vn.edu.hcmuaf.fit.dao.WardDAO;
 import vn.edu.hcmuaf.fit.dao.impl.AddressDAOImpl;
 import vn.edu.hcmuaf.fit.dao.impl.DistrictDAOImpl;
+import vn.edu.hcmuaf.fit.dao.impl.ProvinceDAOImpl;
 import vn.edu.hcmuaf.fit.dao.impl.WardDAOImpl;
 import vn.edu.hcmuaf.fit.domain.AppBaseResult;
 import vn.edu.hcmuaf.fit.domain.AppServiceResult;
-import vn.edu.hcmuaf.fit.dto.address.AddressCreate;
-import vn.edu.hcmuaf.fit.dto.address.AddressDto;
-import vn.edu.hcmuaf.fit.dto.address.AddressUpdate;
+import vn.edu.hcmuaf.fit.dto.address.*;
 import vn.edu.hcmuaf.fit.entity.Address;
 import vn.edu.hcmuaf.fit.entity.District;
+import vn.edu.hcmuaf.fit.entity.Province;
 import vn.edu.hcmuaf.fit.entity.Ward;
 import vn.edu.hcmuaf.fit.service.AddressService;
 import vn.edu.hcmuaf.fit.util.AddressUtil;
@@ -24,11 +25,13 @@ import java.util.List;
 
 public class AddressServiceImpl implements AddressService {
 	private final AddressDAO addressDAO;
+	private final ProvinceDAO provinceDAO;
 	private final DistrictDAO districtDAO;
 	private final WardDAO wardDAO;
 	
 	public AddressServiceImpl(IConnectionPool connectionPool) {
 		this.addressDAO = new AddressDAOImpl(connectionPool);
+		this.provinceDAO = new ProvinceDAOImpl(connectionPool);
 		this.districtDAO = new DistrictDAOImpl(connectionPool);
 		this.wardDAO = new WardDAOImpl(connectionPool);
 	}
@@ -236,6 +239,108 @@ public class AddressServiceImpl implements AddressService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return AppBaseResult.GenarateIsFailed(AppError.Unknown.errorCode(), AppError.Unknown.errorMessage());
+		}
+	}
+
+	@Override
+	public AppServiceResult<List<ProvinceDto>> getProvinces() {
+		try {
+			List<Province> entities = provinceDAO.findAll();
+
+			List<ProvinceDto> result = new ArrayList<>();
+
+			entities.forEach(entity -> result.add(ProvinceDto.createFromEntity(entity)));
+
+			return new AppServiceResult<>(true, 0, "Succeed!", result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
+		}
+	}
+
+	@Override
+	public AppServiceResult<ProvinceDto> getProvinceById(Long provinceId) {
+		try {
+			Province province = provinceDAO.findById(provinceId);
+
+			if (province == null)
+				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+						"Province id is not exist: " + provinceId, null);
+
+			return new AppServiceResult<>(true, 0, "Succeed!", ProvinceDto.createFromEntity(province));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
+		}
+	}
+
+	@Override
+	public AppServiceResult<List<DistrictDto>> getDistricts() {
+		try {
+			List<District> entities = districtDAO.findAll();
+
+			List<DistrictDto> result = new ArrayList<>();
+
+			entities.forEach(entity -> result.add(DistrictDto.createFromEntity(entity)));
+
+			return new AppServiceResult<>(true, 0, "Succeed!", result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
+		}
+	}
+
+	@Override
+	public AppServiceResult<DistrictDto> getDistrictById(Long districtId) {
+		try {
+			District district = districtDAO.findById(districtId);
+
+			if (district == null)
+				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+						"District id is not exist: " + districtId, null);
+
+			return new AppServiceResult<>(true, 0, "Succeed!", DistrictDto.createFromEntity(district));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
+		}
+	}
+
+	@Override
+	public AppServiceResult<List<WardDto>> getWards() {
+		try {
+			List<Ward> entities = wardDAO.findAll();
+
+			List<WardDto> result = new ArrayList<>();
+
+			entities.forEach(entity -> result.add(WardDto.createFromEntity(entity)));
+
+			return new AppServiceResult<>(true, 0, "Succeed!", result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
+		}
+	}
+
+	@Override
+	public AppServiceResult<WardDto> getWardById(Long wardId) {
+		try {
+			Ward ward = wardDAO.findById(wardId);
+
+			if (ward == null)
+				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+						"Ward id is not exist: " + wardId, null);
+
+			return new AppServiceResult<>(true, 0, "Succeed!", WardDto.createFromEntity(ward));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
 		}
 	}
 }

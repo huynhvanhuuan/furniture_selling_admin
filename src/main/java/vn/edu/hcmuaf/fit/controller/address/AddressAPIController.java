@@ -29,6 +29,7 @@ public class AddressAPIController extends HttpServlet {
 
     private static final Gson GSON = new GsonBuilder().create();
     private final IConnectionPool connectionPool = (IConnectionPool) getServletContext().getAttribute("connectionPool");
+
     private final AddressService addressService = new AddressServiceImpl(connectionPool);
 
     @Override
@@ -36,24 +37,35 @@ public class AddressAPIController extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String action = request.getPathInfo();
-        if ("/list".equals(action)) {
-            AppServiceResult<List<CategoryDto>> result = addressService.();
-            if (result.isSuccess()) {
-                response.setStatus(200);
-                response.getWriter().println(GSON.toJson(result.getData()));
-            } else {
-                response.sendError(result.getErrorCode(), result.getMessage());
-            }
-        } else {
-            long id = Long.parseLong(action.substring(1));
+        long id;
+        switch (action) {
+            case "/trademark":
+                id = Long.parseLong(request.getParameter("id"));
+                AppServiceResult<List<AddressDto>> result = addressService.getAddressByTrademarkId(id);
+                if (result.isSuccess()) {
+                    response.setStatus(200);
+                    response.getWriter().println(GSON.toJson(result.getData()));
+                } else {
+                    response.sendError(result.getErrorCode(), result.getMessage());
+                }
+                break;
+            case "/user":
+                id = Long.parseLong(request.getParameter("id"));
 
-            AppServiceResult<AddressDto> result = addressService.getAddressById(id);
-            if (result.isSuccess()) {
-                response.setStatus(200);
-                response.getWriter().write(GSON.toJson(result.getData()));
-            } else {
-                response.sendError(result.getErrorCode(), result.getMessage());
-            }
+                AppServiceResult<List<AddressDto>> result = addressService.getAddressById(id);
+                if (result.isSuccess()) {
+                    response.setStatus(200);
+                    response.getWriter().write(GSON.toJson(result.getData()));
+                } else {
+                    response.sendError(result.getErrorCode(), result.getMessage());
+                }
+                break;
+            case "/":
+                id = Long.parseLong(request.getParameter("id"));
+                AppServiceResult<AddressDto> result = addressService.getAddressById(id);
+        }
+        if ("/list".equals(action)) {
+        } else {
         }
     }
 
