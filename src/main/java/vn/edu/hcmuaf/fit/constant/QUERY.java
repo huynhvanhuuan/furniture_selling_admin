@@ -13,15 +13,16 @@ public class QUERY {
         public static final String FIND_WITH_LIMIT = "select * from product limit ?";
     }
 
-    /* WAREHOUSE */
-    public static class WAREHOUSE {
-        public static final String FIND_ALL = "select * from warehouse";
-        public static final String FIND_BY_PRODUCT_ID = "select * from warehouse where product_id = ?";
-        public static final String FIND_BY_SKU = "select * from warehouse where sku = ?";
-        public static final String CREATE = "insert into warehouse(sku, product_id, image, color_id, material_sku, unit_price, unit_in_stock, discount) values(?,?,?,?,?,?,?,?)";
-        public static final String UPDATE = "update warehouse set sku = ?, product_id = ?, image = ?, color_id = ?, material_sku = ?, unit_price = ?, unit_in_stock = ?, discount = ? where sku = ? and date_created = ?";
-        public static final String DELETE = "delete from warehouse where sku = ? and date_created = ?";
-        public static final String UPDATE_STATUS = "update warehouse set active = (case active when 1 then 0 when 0 then 1 end) where sku = ?";
+    /* PRODUCT DETAIL */
+    public static class PRODUCT_DETAIL {
+        public static final String FIND_ALL = "select * from product_detail";
+        public static final String FIND_BY_ID = "select * from product_detail where id = ?";
+        public static final String FIND_BY_PRODUCT_ID = "select * from product_detail where product_id = ?";
+        public static final String FIND_BY_SKU = "select * from product_detail where sku = ?";
+        public static final String CREATE = "insert into product_detail(sku, product_id, image, color_id, material_sku, unit_price, unit_in_stock, discount) values(?,?,?,?,?,?,?,?)";
+        public static final String UPDATE = "update product_detail set sku = ?, product_id = ?, image = ?, color_id = ?, material_sku = ?, unit_price = ?, unit_in_stock = ?, discount = ? where sku = ? and date_created = ?";
+        public static final String DELETE = "delete from product_detail where sku = ? and date_created = ?";
+        public static final String UPDATE_STATUS = "update product_detail set active = (case active when 1 then 0 when 0 then 1 end) where sku = ?";
     }
 
     /* COLOR */

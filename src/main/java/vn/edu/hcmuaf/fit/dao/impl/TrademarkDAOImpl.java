@@ -12,7 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TrademarkDAOImpl implements TrademarkDAO {
     private final IConnectionPool connectionPool;
@@ -36,7 +38,7 @@ public class TrademarkDAOImpl implements TrademarkDAO {
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
                 String website = rs.getString("website");
-                List<Address> addresses = addressDAO.findAll();
+                Set<Address> addresses = new HashSet<>(addressDAO.findByTrademarkId(id));
 
                 Trademark trademark = new Trademark(id, name, website, addresses);
                 trademarks.add(trademark);
@@ -61,8 +63,8 @@ public class TrademarkDAOImpl implements TrademarkDAO {
             if (rs.next()) {
                 String name = rs.getString("name");
                 String website = rs.getString("website");
+                Set<Address> addresses = new HashSet<>(addressDAO.findByTrademarkId(id));
 
-                List<Address> addresses = addressDAO.findByTrademarkId(id);
                 trademark = new Trademark(id, name, website, addresses);
             }
         } catch (SQLException e) {
@@ -128,8 +130,8 @@ public class TrademarkDAOImpl implements TrademarkDAO {
             if (rs.next()) {
                 long id = rs.getLong("id");
                 String website = rs.getString("website");
+                Set<Address> addresses = new HashSet<>(addressDAO.findByTrademarkId(id));
 
-                List<Address> addresses = addressDAO.findByTrademarkId(id);
                 trademark = new Trademark(id, name, website, addresses);
             }
         } catch (SQLException e) {
@@ -152,7 +154,7 @@ public class TrademarkDAOImpl implements TrademarkDAO {
             if (rs.next()) {
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
-                List<Address> addresses = addressDAO.findByTrademarkId(id);
+                Set<Address> addresses = new HashSet<>(addressDAO.findByTrademarkId(id));
 
                 trademark = new Trademark(id, name, website, addresses);
             }

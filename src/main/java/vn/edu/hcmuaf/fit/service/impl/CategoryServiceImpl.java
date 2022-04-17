@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
 			Category category = categoryDAO.findById(id);
 
 			if (category == null)
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Category id is not exist: " + id, null);
 
 			return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
@@ -61,7 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
 			Category category = categoryDAO.findBySku(sku);
 
 			if (category == null)
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Category sku is not exist: " + sku, null);
 
 			return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
@@ -78,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
 			Category category = categoryDAO.findByName(name);
 
 			if (category == null)
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Category name is not exist: " + name, null);
 
 			return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
@@ -94,15 +94,15 @@ public class CategoryServiceImpl implements CategoryService {
 		try {
 			Category newCategory = new Category();
 
-			if (category.getName() == null && category.getName().equals("")) {
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+			if (category.getName() == null && category.getName().isEmpty()) {
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Name is required!", null);
 			}
 
 			List<Category> categories = categoryDAO.findAll();
 			for (Category c : categories) {
 				if (c.getName().equals(category.getName())) {
-					return new AppServiceResult<>(false, AppError.Validattion.errorCode(), "Name is exist!", null);
+					return new AppServiceResult<>(false, AppError.Validation.errorCode(), "Name is exist!", null);
 				}
 			}
 
@@ -126,17 +126,17 @@ public class CategoryServiceImpl implements CategoryService {
 			Category updatedCategory = categoryDAO.findById(category.getId());
 
 			if (updatedCategory == null)
-				return AppBaseResult.GenarateIsFailed(AppError.Validattion.errorCode(), "Category id is not exist: " + category.getId());
+				return AppBaseResult.GenarateIsFailed(AppError.Validation.errorCode(), "Category id is not exist: " + category.getId());
 
 			if (category.getName() == null && category.getName().equals("")) {
-				return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<CategoryDto>(false, AppError.Validation.errorCode(),
 						"Name is required!", null);
 			}
 
 			List<Category> categories = categoryDAO.findAll();
 			for (Category c : categories) {
 				if (c.getName().equals(category.getName()) && c.getId() != category.getId()) {
-					return new AppServiceResult<CategoryDto>(false, AppError.Validattion.errorCode(), "Name is exist!", null);
+					return new AppServiceResult<CategoryDto>(false, AppError.Validation.errorCode(), "Name is exist!", null);
 				}
 			}
 
@@ -161,7 +161,7 @@ public class CategoryServiceImpl implements CategoryService {
 				categoryDAO.delete(id);
 				return AppBaseResult.GenarateIsSucceed();
 			} else {
-				return AppBaseResult.GenarateIsFailed(AppError.Validattion.errorCode(), "Category id is not exist: " + id);
+				return AppBaseResult.GenarateIsFailed(AppError.Validation.errorCode(), "Category id is not exist: " + id);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -179,7 +179,7 @@ public class CategoryServiceImpl implements CategoryService {
 				categoryDAO.save(category);
 				return new AppServiceResult<>(true, 0, "Succeed!", CategoryDto.createFromEntity(category));
 			} else
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(), "Category id is not exist: " + id, null);
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(), "Category id is not exist: " + id, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();

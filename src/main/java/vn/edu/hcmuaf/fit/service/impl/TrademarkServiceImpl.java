@@ -1,60 +1,140 @@
 package vn.edu.hcmuaf.fit.service.impl;
 
 import vn.edu.hcmuaf.fit.config.IConnectionPool;
+import vn.edu.hcmuaf.fit.constant.AppError;
 import vn.edu.hcmuaf.fit.dao.TrademarkDAO;
 import vn.edu.hcmuaf.fit.dao.impl.TrademarkDAOImpl;
+import vn.edu.hcmuaf.fit.domain.AppBaseResult;
+import vn.edu.hcmuaf.fit.domain.AppServiceResult;
+import vn.edu.hcmuaf.fit.dto.trademark.TrademarkCreate;
+import vn.edu.hcmuaf.fit.dto.trademark.TrademarkDto;
+import vn.edu.hcmuaf.fit.dto.trademark.TrademarkUpdate;
 import vn.edu.hcmuaf.fit.entity.Trademark;
-import vn.edu.hcmuaf.fit.helper.DbManager;
-import vn.edu.hcmuaf.fit.model.Trademark;
 import vn.edu.hcmuaf.fit.service.TrademarkService;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TrademarkServiceImpl implements TrademarkService {
 	private final TrademarkDAO trademarkDAO;
-	
+
 	public TrademarkServiceImpl(IConnectionPool connectionPool) {
 		this.trademarkDAO = new TrademarkDAOImpl(connectionPool);
 	}
-	
+
 	@Override
-	public List<Trademark> getTrademarks() throws SQLException {
-		return trademarkDAO.findAll();
+	public AppServiceResult<List<TrademarkDto>> getTrademarks() {
+		try {
+			List<Trademark> trademarks = trademarkDAO.findAll();
+			List<TrademarkDto> result = new ArrayList<>();
+
+			trademarks.forEach(category -> result.add(TrademarkDto.createFromEntity(category)));
+
+			return new AppServiceResult<>(true, 0, "Succeed!", result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
+		}
 	}
-	
+
 	@Override
-	public List<String> getListNameHasProduct() throws SQLException {
-		return trademarkDAO.getListNameHasProduct();
+	public AppServiceResult<TrademarkDto> getTrademark(Long id) {
+		try {
+			Trademark trademark = trademarkDAO.findById(id);
+
+			if (trademark == null)
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
+						"Trademark id is not exist: " + id, null);
+
+			return new AppServiceResult<>(true, 0, "Succeed!", TrademarkDto.createFromEntity(trademark));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
+		}
 	}
-	
+
 	@Override
-	public Trademark get(int id) throws SQLException {
-		return trademarkDAO.get(id);
+	public AppServiceResult<TrademarkDto> createTrademark(TrademarkCreate trademark) {
+		try {
+			Trademark newTrademark = new Trademark();
+
+			if (trademark.getName() == null && trademark.getName().isEmpty()) {
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
+						"Name is required!", null);
+			}
+
+			List<Trademark> trademarks = trademarkDAO.findAll();
+			for (Trademark t : trademarks) {
+				if (t.getName().equals(trademark.getName())) {
+					return new AppServiceResult<>(false, AppError.Validation.errorCode(), "Name is exist!", null);
+				}
+
+				if (t.getWebsite().equals(trademark.getWebsite())) {
+					return new AppServiceResult<>(false, AppError.Validation.errorCode(), "Website is exist!", null);
+				}
+			}
+
+			newTrademark.setId(0L);
+			newTrademark.setName(trademark.getName());
+			newTrademark.setWebsite(trademark.getWebsite());
+
+			trademarkDAO.save(newTrademark);
+
+			return new AppServiceResult<>(true, 0, "Succeed!", TrademarkDto.createFromEntity(newTrademark));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new AppServiceResult<>(false, AppError.Unknown.errorCode(),
+					AppError.Unknown.errorMessage(), null);
+		}
 	}
-	
+
 	@Override
-	public void create(Trademark trademark) throws SQLException {
-		trademarkDAO.create(trademark);
+	public AppBaseResult updateTrademark(TrademarkUpdate trademark) {
+		try {
+			Trademark updatedTrademark = trademarkDAO.findById(trademark.getId());
+
+			if (updatedTrademark == null)
+				return new AppBaseResult(false, AppError.Validation.errorCode(), "Trademark id is not exist: " + trademark.getId());
+
+			if (trademark.getName() == null && trademark.getName().isEmpty())
+				return new AppBaseResult(false, AppError.Validation.errorCode(), "Name is required!");
+
+			List<Trademark> trademarks = trademarkDAO.findAll();
+			for (Trademark t : trademarks) {
+				if (t.getName().equals(trademark.getName()) && !Objects.equals(t.getId(), trademark.getId())) {
+					return new AppBaseResult(false, AppError.Validation.errorCode(), "Name is exist!");
+				}
+			}
+
+			updatedTrademark.setName(trademark.getName());
+			updatedTrademark.setWebsite(trademark.getWebsite());
+
+			trademarkDAO.save(updatedTrademark);
+
+			return AppBaseResult.GenarateIsSucceed();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return AppBaseResult.GenarateIsFailed(AppError.Unknown.errorCode(), AppError.Unknown.errorMessage());
+		}
 	}
-	
+
 	@Override
-	public void update(Trademark trademark) throws SQLException {
-		trademarkDAO.update(trademark);
-	}
-	
-	@Override
-	public void delete(int id) throws SQLException {
-		trademarkDAO.delete(id);
-	}
-	
-	@Override
-	public void changeActive(int id) throws SQLException {
-		trademarkDAO.changeActive(id);
-	}
-	
-	@Override
-	public boolean isExist(String name, String website) throws SQLException {
-		return trademarkDAO.isExist(name, website);
+	public AppBaseResult deleteTrademark(Long id) {
+		try {
+			Trademark trademark = trademarkDAO.findById(id);
+
+			if (trademark != null) {
+				trademarkDAO.delete(id);
+				return AppBaseResult.GenarateIsSucceed();
+			} else {
+				return AppBaseResult.GenarateIsFailed(AppError.Validation.errorCode(), "Tradmark id is not exist: " + id);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return AppBaseResult.GenarateIsFailed(AppError.Unknown.errorCode(), AppError.Unknown.errorMessage());
+		}
 	}
 }

@@ -5,14 +5,11 @@ import com.google.gson.GsonBuilder;
 import vn.edu.hcmuaf.fit.config.IConnectionPool;
 import vn.edu.hcmuaf.fit.domain.AppBaseResult;
 import vn.edu.hcmuaf.fit.domain.AppServiceResult;
+import vn.edu.hcmuaf.fit.dto.address.AddressCreate;
 import vn.edu.hcmuaf.fit.dto.address.AddressDto;
 import vn.edu.hcmuaf.fit.dto.address.AddressUpdate;
-import vn.edu.hcmuaf.fit.dto.category.CategoryCreate;
-import vn.edu.hcmuaf.fit.dto.category.CategoryDto;
-import vn.edu.hcmuaf.fit.entity.Ward;
 import vn.edu.hcmuaf.fit.service.AddressService;
 import vn.edu.hcmuaf.fit.service.impl.AddressServiceImpl;
-import vn.edu.hcmuaf.fit.util.StringUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,8 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 @WebServlet(name = "AddressAPIController", value = "/api/address/*")
 public class AddressAPIController extends HttpServlet {
@@ -36,36 +31,13 @@ public class AddressAPIController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        String action = request.getPathInfo();
-        long id;
-        switch (action) {
-            case "/trademark":
-                id = Long.parseLong(request.getParameter("id"));
-                AppServiceResult<List<AddressDto>> result = addressService.getAddressByTrademarkId(id);
-                if (result.isSuccess()) {
-                    response.setStatus(200);
-                    response.getWriter().println(GSON.toJson(result.getData()));
-                } else {
-                    response.sendError(result.getErrorCode(), result.getMessage());
-                }
-                break;
-            case "/user":
-                id = Long.parseLong(request.getParameter("id"));
-
-                AppServiceResult<List<AddressDto>> result = addressService.getAddressById(id);
-                if (result.isSuccess()) {
-                    response.setStatus(200);
-                    response.getWriter().write(GSON.toJson(result.getData()));
-                } else {
-                    response.sendError(result.getErrorCode(), result.getMessage());
-                }
-                break;
-            case "/":
-                id = Long.parseLong(request.getParameter("id"));
-                AppServiceResult<AddressDto> result = addressService.getAddressById(id);
-        }
-        if ("/list".equals(action)) {
+        Long id = Long.parseLong(request.getPathInfo().substring(1));
+        AppServiceResult<AddressDto> result = addressService.getAddressById(id);
+        if (result.isSuccess()) {
+            response.setStatus(200);
+            response.getWriter().println(GSON.toJson(result.getData()));
         } else {
+            response.sendError(result.getErrorCode(), result.getMessage());
         }
     }
 
@@ -73,12 +45,16 @@ public class AddressAPIController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        String name = request.getParameter("name");
-        String sku = StringUtil.toStringWithoutSpaces(name).toUpperCase(Locale.ROOT);
 
-        CategoryCreate newCategory = new CategoryCreate(sku, name);
+        String number = request.getParameter("number");
+        String street = request.getParameter("street");
+        Long wardId = Long.parseLong(request.getParameter("wardId"));
+        Long districtId = Long.parseLong(request.getParameter("districtId"));
+        Long provinceId = Long.parseLong(request.getParameter("provinceId"));
 
-        AppServiceResult<CategoryDto> result = addressService.createAddress(newCategory);
+        AddressCreate newAddress = new AddressCreate(number, street, wardId, districtId, provinceId);
+
+        AppServiceResult<AddressDto> result = addressService.createAddress(newAddress);
         if (result.isSuccess()) {
             response.setStatus(200);
             response.getWriter().println(GSON.toJson(result.getData()));
@@ -89,14 +65,19 @@ public class AddressAPIController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        long id = Long.parseLong(request.getParameter("id"));
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Long id = Long.parseLong(request.getParameter("id"));
         String number = request.getParameter("number");
         String street = request.getParameter("street");
         Long wardId = Long.parseLong(request.getParameter("wardId"));
         Long districtId = Long.parseLong(request.getParameter("districtId"));
+        Long provinceId = Long.parseLong(request.getParameter("provinceId"));
 
-        Ward ward = wardService.getWardById(wardId);
-        AppBaseResult result = addressService.updateAddress(new AddressUpdate(id, ));
+        AddressUpdate updatedAddress = new AddressUpdate(id, number, street, wardId, districtId, provinceId);
+
+        AppBaseResult result = addressService.updateAddress(updatedAddress);
         if (result.isSuccess()) {
             response.setStatus(200);
             response.getWriter().println(GSON.toJson("Succeed!"));

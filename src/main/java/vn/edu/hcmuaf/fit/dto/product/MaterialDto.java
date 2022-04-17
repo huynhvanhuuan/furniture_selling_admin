@@ -1,8 +1,8 @@
-package vn.edu.hcmuaf.fit.dto.role;
+package vn.edu.hcmuaf.fit.dto.product;
 
-import vn.edu.hcmuaf.fit.entity.Role;
+import vn.edu.hcmuaf.fit.entity.Material;
 
-public class RoleDto {
+public class MaterialDto {
     private Long id;
     private String name;
 
@@ -22,11 +22,11 @@ public class RoleDto {
         this.name = name;
     }
 
-    public static RoleDto createFromEntity(Role src) {
-        RoleDto dest = new RoleDto();
+    public static MaterialDto createFromEntity(Material src) {
+        MaterialDto dest = new MaterialDto();
 
-        dest.setId(src.getId());
-        dest.setName(src.getName());
+        dest.id = src.getId();
+        dest.name = src.getName();
 
         return dest;
     }

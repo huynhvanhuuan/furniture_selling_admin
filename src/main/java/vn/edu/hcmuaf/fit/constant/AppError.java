@@ -2,7 +2,7 @@ package vn.edu.hcmuaf.fit.constant;
 
 public enum AppError {
 	
-	Validattion(101, "Validation error"),
+	Validation(101, "Validation error"),
 	Unknown(99, "Unknown error");
 
 	private int errorCode;

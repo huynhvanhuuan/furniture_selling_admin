@@ -76,7 +76,7 @@ public class AddressServiceImpl implements AddressService {
 			Address address = addressDAO.findById(id);
 
 			if (address == null)
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Address id is not exist: " + id, null);
 
 			return new AppServiceResult<>(true, 0, "Succeed!", AddressDto.createFromEntity(address));
@@ -93,7 +93,7 @@ public class AddressServiceImpl implements AddressService {
 			Address address = addressDAO.findByPath(path);
 
 			if (address == null)
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Address path is not exist: " + path, null);
 
 			return new AppServiceResult<>(true, 0, "Succeed!", AddressDto.createFromEntity(address));
@@ -110,12 +110,12 @@ public class AddressServiceImpl implements AddressService {
 			Address newAddress = new Address();
 
 			if (address.getProvinceId() == null) {
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Province is required!", null);
 			}
 
 			if (address.getDistrictId() == null) {
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"District is required!", null);
 			}
 
@@ -123,16 +123,16 @@ public class AddressServiceImpl implements AddressService {
 
 			if (district.getWards().size() > 0) {
 				if (address.getWardId() == null) {
-					return new AppServiceResult<>(false, AppError.Validattion.errorCode(), "Ward is required!", null);
+					return new AppServiceResult<>(false, AppError.Validation.errorCode(), "Ward is required!", null);
 				}
 
 				if (address.getWardId() != 0) {
 					if (address.getNumber() == null && address.getNumber().equals("")) {
-						return new AppServiceResult<>(false, AppError.Validattion.errorCode(), "Number is required!", null);
+						return new AppServiceResult<>(false, AppError.Validation.errorCode(), "Number is required!", null);
 					}
 
 					if (address.getStreet() == null && address.getNumber().equals("")) {
-						return new AppServiceResult<>(false, AppError.Validattion.errorCode(), "Street is required!", null);
+						return new AppServiceResult<>(false, AppError.Validation.errorCode(), "Street is required!", null);
 					}
 				}
 			}
@@ -145,7 +145,7 @@ public class AddressServiceImpl implements AddressService {
 			List<Address> addresses = addressDAO.findAll();
 			for (Address item : addresses) {
 				if (item.getPath().equals(path))
-					return new AppServiceResult<>(false, AppError.Validattion.errorCode(), "Address is existed", null);
+					return new AppServiceResult<>(false, AppError.Validation.errorCode(), "Address is existed", null);
 			}
 
 			newAddress.setId(0L);
@@ -171,29 +171,29 @@ public class AddressServiceImpl implements AddressService {
 			Address updateAddress = addressDAO.findById(address.getId());
 
 			if (updateAddress == null) {
-				return AppBaseResult.GenarateIsFailed(AppError.Validattion.errorCode(), "Address id is not exist: " + address.getId());
+				return AppBaseResult.GenarateIsFailed(AppError.Validation.errorCode(), "Address id is not exist: " + address.getId());
 			}
 
 			if (address.getProvinceId() == null)
-				return new AppServiceResult<AddressDto>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<AddressDto>(false, AppError.Validation.errorCode(),
 						"Province is required!", null);
 
 			if (address.getDistrictId() == null)
-				return new AppServiceResult<AddressDto>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<AddressDto>(false, AppError.Validation.errorCode(),
 						"District is required!", null);
 
 			District district = districtDAO.findById(address.getDistrictId());
 
 			if (district.getWards().size() > 0) {
 				if (address.getWardId() == null)
-					return new AppServiceResult<AddressDto>(false, AppError.Validattion.errorCode(), "Ward is required!", null);
+					return new AppServiceResult<AddressDto>(false, AppError.Validation.errorCode(), "Ward is required!", null);
 
 				if (address.getWardId() != 0) {
 					if (address.getNumber() == null)
-						return new AppServiceResult<AddressDto>(false, AppError.Validattion.errorCode(), "Number is required!", null);
+						return new AppServiceResult<AddressDto>(false, AppError.Validation.errorCode(), "Number is required!", null);
 
 					if (address.getStreet() == null)
-						return new AppServiceResult<AddressDto>(false, AppError.Validattion.errorCode(), "Street is required!", null);
+						return new AppServiceResult<AddressDto>(false, AppError.Validation.errorCode(), "Street is required!", null);
 				}
 			}
 
@@ -205,7 +205,7 @@ public class AddressServiceImpl implements AddressService {
 			List<Address> addresses = addressDAO.findAll();
 			for (Address item : addresses) {
 				if (item.getPath().equals(path))
-					return new AppServiceResult<AddressDto>(false, AppError.Validattion.errorCode(), "Address is existed", null);
+					return new AppServiceResult<AddressDto>(false, AppError.Validation.errorCode(), "Address is existed", null);
 			}
 
 			updateAddress.setId(address.getId());
@@ -234,7 +234,7 @@ public class AddressServiceImpl implements AddressService {
 				addressDAO.delete(id);
 				return AppBaseResult.GenarateIsSucceed();
 			} else {
-				return AppBaseResult.GenarateIsFailed(AppError.Validattion.errorCode(), "Address id is not exist: " + id);
+				return AppBaseResult.GenarateIsFailed(AppError.Validation.errorCode(), "Address id is not exist: " + id);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -265,7 +265,7 @@ public class AddressServiceImpl implements AddressService {
 			Province province = provinceDAO.findById(provinceId);
 
 			if (province == null)
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Province id is not exist: " + provinceId, null);
 
 			return new AppServiceResult<>(true, 0, "Succeed!", ProvinceDto.createFromEntity(province));
@@ -299,7 +299,7 @@ public class AddressServiceImpl implements AddressService {
 			District district = districtDAO.findById(districtId);
 
 			if (district == null)
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"District id is not exist: " + districtId, null);
 
 			return new AppServiceResult<>(true, 0, "Succeed!", DistrictDto.createFromEntity(district));
@@ -333,7 +333,7 @@ public class AddressServiceImpl implements AddressService {
 			Ward ward = wardDAO.findById(wardId);
 
 			if (ward == null)
-				return new AppServiceResult<>(false, AppError.Validattion.errorCode(),
+				return new AppServiceResult<>(false, AppError.Validation.errorCode(),
 						"Ward id is not exist: " + wardId, null);
 
 			return new AppServiceResult<>(true, 0, "Succeed!", WardDto.createFromEntity(ward));
