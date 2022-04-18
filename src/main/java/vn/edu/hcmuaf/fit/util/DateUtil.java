@@ -6,17 +6,11 @@ import java.util.Date;
 
 public final class DateUtil {
 
-	public static Date ParseDateString(final String dateStr) {
-
-		if (dateStr == null) {
-			return null;
-		}
-
-		SimpleDateFormat format = (dateStr.charAt(4) == '/') ? new SimpleDateFormat("yyyy/MM/dd")
-				: new SimpleDateFormat("yyyy-MM-dd");
+	public static Date toDatetime(final String dateStr) {
+		if (dateStr == null) return null;
 
 		try {
-			return format.parse(dateStr);
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStr);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -24,5 +18,14 @@ public final class DateUtil {
 	}
 
 
+	public static Date toDate(final String dateStr) {
+		if (dateStr == null) return null;
 
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

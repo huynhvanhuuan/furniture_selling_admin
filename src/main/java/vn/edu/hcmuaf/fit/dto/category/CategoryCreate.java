@@ -4,8 +4,6 @@ public class CategoryCreate {
     private String sku;
     private String name;
 
-    public CategoryCreate() { }
-
     public CategoryCreate(String sku, String name) {
         this.sku = sku;
         this.name = name;

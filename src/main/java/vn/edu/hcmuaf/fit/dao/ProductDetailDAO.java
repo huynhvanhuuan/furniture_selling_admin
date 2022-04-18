@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface ProductDetailDAO extends BaseDAO<ProductDetail> {
 	List<ProductDetail> findByProductId(Long id);
-	ProductDetail findByProductSku(String sku);
-	void deleteByProductId(Long id);
-	void deleteBySku(String sku);
+	ProductDetail findBySku(String sku);
 }

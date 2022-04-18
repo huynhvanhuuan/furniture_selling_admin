@@ -1,7 +1,7 @@
 package vn.edu.hcmuaf.fit.service;
 
 import vn.edu.hcmuaf.fit.dto.cart.CartItem;
-import vn.edu.hcmuaf.fit.model.User;
+import vn.edu.hcmuaf.fit.entity.User;
 
 import java.sql.SQLException;
 import java.text.ParseException;
