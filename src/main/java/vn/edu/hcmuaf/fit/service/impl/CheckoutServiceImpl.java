@@ -4,7 +4,7 @@ import vn.edu.hcmuaf.fit.dao.UserDAO;
 import vn.edu.hcmuaf.fit.dao.impl.UserDAOImpl;
 import vn.edu.hcmuaf.fit.dto.checkout.Checkout;
 import vn.edu.hcmuaf.fit.dto.checkout.CheckoutResponse;
-import vn.edu.hcmuaf.fit.helper.DbManager;
+import vn.edu.hcmuaf.fit.infrastructure.DbManager;
 import vn.edu.hcmuaf.fit.model.Order;
 import vn.edu.hcmuaf.fit.model.OrderItem;
 import vn.edu.hcmuaf.fit.model.User;

@@ -4,16 +4,16 @@ import vn.edu.hcmuaf.fit.dao.ProductDetailDAO;
 import vn.edu.hcmuaf.fit.dao.impl.ProductDetailDAOImpl;
 import vn.edu.hcmuaf.fit.entity.ProductDetail;
 import vn.edu.hcmuaf.fit.infrastructure.DbManager;
-import vn.edu.hcmuaf.fit.service.WarehouseService;
+import vn.edu.hcmuaf.fit.service.ProductDetailService;
 
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
-public class WarehouseServiceImpl implements WarehouseService {
+public class ProductDetailServiceImpl implements ProductDetailService {
 	private final ProductDetailDAO warehouseDAO;
 	
-	public WarehouseServiceImpl() {
+	public ProductDetailServiceImpl() {
 		this.warehouseDAO = new ProductDetailDAOImpl(DbManager.connectionPool);
 	}
 	

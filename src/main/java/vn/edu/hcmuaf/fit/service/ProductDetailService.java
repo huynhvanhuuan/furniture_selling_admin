@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
-public interface WarehouseService {
+public interface ProductDetailService {
 	List<ProductDetail> getProductList() throws SQLException, ParseException;
 	List<ProductDetail> getProductList(Product product) throws SQLException, ParseException;
 	List<Color> getColorList() throws SQLException;
